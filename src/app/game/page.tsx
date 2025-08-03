@@ -62,7 +62,7 @@ const GamePage: React.FC = () => {
         if (gameState.adventureCards.filter(c => !c.isPlaceholder).length === 0 && gameState.futureCards.length > 0) {
             drawAdventureLine();
         }
-    }, [gameState.futureCards.length, gameState.adventureCards.length]);
+    }, [gameState.futureCards.length, gameState.adventureCards.length, gameState.adventureCards]);
 
     useEffect(() => {
         if (gameState.adventureCards.filter(c => !c.isPlaceholder).length <= 1 && gameState.futureCards.length > 0) {
@@ -190,7 +190,7 @@ const GamePage: React.FC = () => {
     const handleResolveChallenge = (challenge: Card, method: string) => {
         const cost = challenge.rank;
         setGameState(p => {
-            let newState = { ...p };
+            const newState = { ...p };
             let success = false;
             if (method === 'volition' && p.volitionCard && getCardValue(p.volitionCard) >= cost) {
                 newState.pastCards = [...p.pastCards, challenge, p.volitionCard];
@@ -225,7 +225,7 @@ const GamePage: React.FC = () => {
 
     const handleDeployHelper = (helper: Card, target: Card) => {
         setGameState(p => {
-            let newState = { ...p };
+            const newState = { ...p };
             const spentWisdom = p.wisdomCards[0];
             newState.wisdomCards = p.wisdomCards.slice(1);
             newState.pastCards = [...p.pastCards, spentWisdom, helper];
@@ -251,7 +251,7 @@ const GamePage: React.FC = () => {
     return (
         <div className={`${styles.bg_gray_50} ${styles.min_h_screen} ${styles.p_4} ${styles.md_p_8} ${styles.font_sans}`}>
             <div className={`${styles.container} ${styles.mx_auto} ${styles.max_w_7xl}`}>
-                <h1 className={styles.title}>The Fool's Journey</h1>
+                <h1 className={styles.title}>The Fool&apos;s Journey</h1>
 
                 <div className={`${styles.flex_row_container} ${styles.top}`}>
                     <div className={`${styles.droppable_area_container} ${styles.past}`}>

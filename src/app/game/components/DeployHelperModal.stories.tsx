@@ -1,7 +1,6 @@
 
-import React from 'react';
-import { Meta, StoryObj } from '@storybook/react';
-import { within, expect, screen, waitFor } from '@storybook/test';
+import { Meta, StoryObj } from '@storybook/nextjs-vite';
+import { expect, screen, waitFor } from '@storybook/test';
 import DeployHelperModal from './DeployHelperModal';
 import { DECK_DATA } from '../data';
 
@@ -29,7 +28,7 @@ export const Default: Story = {
     adventureCards: [DECK_DATA.find(c => c.suit === 'Wands' && c.rank < 10)],
     satchelCards: [],
   },
-  play: async ({ canvasElement }) => {
+  play: async () => {
     await waitFor(() => {
       expect(screen.getByText(/Deploy Helper: .*?/i)).toBeInTheDocument();
       expect(screen.getByRole('button', { name: /Apply to Wands \d+ in strength/i })).toBeInTheDocument();

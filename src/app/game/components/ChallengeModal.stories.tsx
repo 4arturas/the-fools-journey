@@ -1,7 +1,6 @@
 
-import React from 'react';
-import { Meta, StoryObj } from '@storybook/react';
-import { within, expect, userEvent, screen, waitFor } from '@storybook/test';
+import { Meta, StoryObj } from '@storybook/nextjs-vite';
+import { expect, screen, waitFor } from '@storybook/test';
 import ChallengeModal from './ChallengeModal';
 import { DECK_DATA } from '../data';
 
@@ -27,7 +26,7 @@ export const Default: Story = {
     strengthCard: { card: { id: 'strength-mock', title: 'Wands 10', type: 'minor', rank: 10, suit: 'Wands', cardId: 10, isDoubled: false }, value: 10 },
     volitionCard: { id: 'volition-mock', title: 'Swords 15', type: 'major', rank: 15, suit: 'Swords', cardId: 15, isDoubled: false },
   },
-  play: async ({ canvasElement }) => {
+  play: async () => {
     await waitFor(() => {
       expect(screen.getByText(/Challenge: Major Arcana 15/i)).toBeInTheDocument();
       expect(screen.getByRole('button', { name: /Use Volition \(15\)/i })).toBeEnabled();
@@ -45,8 +44,7 @@ export const NoOptions: Story = {
     strengthCard: { card: null, value: 0 },
     volitionCard: null,
   },
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
+  play: async () => {
     await waitFor(() => {
       expect(screen.getByRole('button', { name: /Use Volition \(0\)/i, hidden: true })).toBeDisabled();
       expect(screen.getByRole('button', { name: /Use Strength/i, hidden: true })).toBeDisabled();

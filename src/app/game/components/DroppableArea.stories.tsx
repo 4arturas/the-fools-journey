@@ -1,6 +1,5 @@
 
-import React from 'react';
-import { Meta, StoryObj } from '@storybook/react';
+import { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { within, expect } from '@storybook/test';
 import DroppableArea from './DroppableArea';
 import CardPlaceholder from './CardPlaceholder';

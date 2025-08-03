@@ -1,7 +1,6 @@
 
-import React from 'react';
-import { Meta, StoryObj } from '@storybook/react';
-import { within, expect, screen, waitFor } from '@storybook/test';
+import { Meta, StoryObj } from '@storybook/nextjs-vite';
+import { expect, screen, waitFor } from '@storybook/test';
 import GameStatusModal from './GameStatusModal';
 
 const meta: Meta<typeof GameStatusModal> = {
@@ -23,7 +22,7 @@ export const Win: Story = {
     content: "You have successfully completed The Fool's Journey!",
     open: true,
   },
-  play: async ({ canvasElement }) => {
+  play: async () => {
     await waitFor(() => {
       expect(screen.getByText(/Congratulations!/i)).toBeInTheDocument();
       expect(screen.getByText("You have successfully completed The Fool's Journey!")).toBeInTheDocument();
@@ -37,7 +36,7 @@ export const Lose: Story = {
     content: "The Fool's vitality has reached zero. Your journey ends here.",
     open: true,
   },
-  play: async ({ canvasElement }) => {
+  play: async () => {
     await waitFor(() => {
       expect(screen.getByText(/Game Over/i)).toBeInTheDocument();
       expect(screen.getByText("The Fool's vitality has reached zero. Your journey ends here.")).toBeInTheDocument();
