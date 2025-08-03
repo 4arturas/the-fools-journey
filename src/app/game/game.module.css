@@ -1,0 +1,312 @@
+body {
+    background-color: #f9fafb;
+    min-height: 100vh;
+    padding: 1rem;
+    font-family: sans-serif;
+    color: #1f2937;
+}
+
+.container {
+    max-width: 1280px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.title {
+    font-size: 1.875rem;
+    font-weight: 800;
+    text-align: center;
+    margin-bottom: 2rem;
+    color: #1f2937;
+}
+
+.subtitle {
+    font-size: 1.125rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #374151;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.flex_row_container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+
+.droppable_area_container {
+    width: 100%;
+    background-color: #ffffff;
+    border-radius: 0.5rem;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    text-align: center;
+    padding: 1rem;
+    position: relative;
+}
+
+.droppable_area_container.hero_card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: auto;
+}
+
+.droppable_area {
+    width: 100%;
+    min-height: 12rem;
+    border: 2px dashed #d1d5db;
+    border-radius: 0.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem;
+}
+
+.droppable_area.past_cards {
+    max-height: 20rem;
+    overflow-y: auto;
+    flex-direction: column;
+    justify: flex-start;
+}
+
+.adventure_area {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    background-color: #f3f4f6;
+    border: 2px dashed #d1d5db;
+}
+
+.card_placeholder {
+    position: relative;
+    width: 8rem;
+    height: 12rem;
+    border-radius: 0.5rem;
+    transition: transform 0.2s ease-in-out;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 0.5rem;
+    font-size: 0.8rem;
+}
+
+.card_placeholder.empty {
+    background-color: transparent;
+    border: 2px dashed #d1d5db;
+}
+
+.card_placeholder.card_face {
+    background-color: #ffffff;
+    border: 2px solid #d1d5db;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    color: #000000;
+    cursor: grab;
+    position: relative;
+}
+
+.card_face h4 {
+    margin-top: 0.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.card_placeholder.card_face:hover {
+    transform: scale(1.05);
+}
+
+.card_image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 0.5rem;
+}
+
+.card_back_image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 0.5rem;
+}
+
+.card_text {
+    font-size: 0.75rem;
+    color: #9ca3af;
+}
+
+.future_cards_stack_wrapper {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.future_cards_stack {
+    position: relative;
+    width: 8rem;
+    height: 12rem;
+}
+
+.future_cards_stack > div {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.future_cards_stack .top_card {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    cursor: grab;
+}
+
+.token_placeholder {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 9999px;
+    background-color: #facc15;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    transition: transform 0.15s ease-in-out;
+    cursor: pointer;
+}
+
+.token_placeholder:hover {
+    transform: scale(1.1);
+}
+
+.used_tokens_area {
+    width: 100%;
+    height: 5rem;
+    border: 2px dashed #d1d5db;
+    border-radius: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    color: #9ca3af;
+}
+
+.vitality_display {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    color: #ef4444;
+}
+
+.help_icon {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    cursor: pointer;
+    color: #6b7280;
+    font-size: 1.25rem;
+    transition: color 0.15s ease-in-out;
+}
+
+.help_icon:hover {
+    color: #1f2937;
+}
+
+.card_value {
+    font-size: 1.5rem;
+    font-weight: bold;
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    color: #000;
+    background-color: rgba(255, 255, 255, 0.7);
+    padding: 0.2rem 0.5rem;
+    border-radius: 0.5rem;
+    line-height: 1;
+}
+
+.card_suit {
+    font-size: 1.5rem;
+    position: absolute;
+    bottom: 0.5rem;
+    right: 0.5rem;
+    color: #000;
+    background-color: rgba(255, 255, 255, 0.7);
+    padding: 0.2rem 0.5rem;
+    border-radius: 0.5rem;
+}
+
+.challenge_modal_content, .helper_modal_content {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    align-items: center;
+}
+
+.challenge_modal_content .card_placeholder, .helper_modal_content .card_placeholder {
+    margin-bottom: 1rem;
+}
+
+.challenge_modal_actions, .helper_modal_actions {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    width: 100%;
+}
+
+.restart_button {
+    margin-top: 1rem;
+}
+
+/* Media Queries for responsiveness */
+@media (min-width: 768px) {
+    body {
+        padding: 2rem;
+    }
+
+    .droppable_area {
+        min-height: 12rem;
+    }
+
+    .droppable_area_container {
+        width: 25%;
+    }
+
+    .flex_row_container.middle {
+        flex-direction: row;
+        align-items: stretch;
+        gap: 2rem;
+    }
+
+    .flex_row_container.bottom {
+        flex-direction: row;
+        gap: 2rem;
+    }
+}
+
+@media (min-width: 1024px) {
+    .title {
+        font-size: 3rem;
+    }
+    .flex_row_container.top {
+        flex-direction: row;
+        align-items: flex-start;
+        gap: 3rem;
+    }
+    .droppable_area_container.past {
+        width: 16.666667%;
+    }
+    .droppable_area_container.adventure {
+        width: 60%;
+    }
+    .droppable_area_container.future {
+        width: 16.666667%;
+    }
+}
