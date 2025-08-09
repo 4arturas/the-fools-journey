@@ -37,6 +37,6 @@ export const WithCards: Story = {
     title: 'Wisdom',
     isEmpty: false,
     zoneId: 'wisdom',
-    children: <CardPlaceholder card={DECK_DATA.find(c => c.suit === 'Pentacles')!} />
+    children: <CardPlaceholder card={DECK_DATA.find(c => c.suit.name === 'Pentacles')!} />
   },
 };

@@ -1,6 +1,7 @@
 
 import Image from 'next/image';
 import React from 'react';
+import { Tooltip } from 'antd';
 import { FALLBACK_CARD_BACK_URL, SUIT_ICONS } from '../data';
 import { getCardValue } from '../rules';
 import styles from '../game.module.css';
@@ -23,15 +24,17 @@ const CardPlaceholder: React.FC<CardPlaceholderProps> = ({ isBack = false, card 
     const getCardTitle = (c: Card) => c.type === 'major' ? `Major Arcana ${c.rank}` : `${c.suit} ${c.rank}`;
 
     return (
-        <div id={id} draggable={!isBack && !isPlaceholder} onDragStart={onDragStart && card ? (e) => onDragStart(e, card) : undefined} onClick={onClick && card ? () => onClick(card) : undefined} className={`${cardClass} ${className}`}>
-            {isBack ? <Image src={FALLBACK_CARD_BACK_URL} alt="Card back" className={styles.card_back_image} width={128} height={192} unoptimized /> : isPlaceholder ? <span className={styles.card_text}>Empty Slot</span> : (
-                <>
-                    {imageUrl && <Image src={imageUrl} alt={getCardTitle(card!)} className={styles.card_image} width={128} height={192} />}
-                    <div className={styles.card_value}>{getCardValue(card)}</div>
-                    {card!.suit && card!.suit !== 'Major' && <div className={styles.card_suit}><i className={`${SUIT_ICONS[card!.suit]}`}></i></div>}
-                </>
-            )}
-        </div>
+        <Tooltip title={card && !isPlaceholder ? card.title : ''}>
+            <div id={id} draggable={!isBack && !isPlaceholder} onDragStart={onDragStart && card ? (e) => onDragStart(e, card) : undefined} onClick={onClick && card ? () => onClick(card) : undefined} className={`${cardClass} ${className}`}>
+                {isBack ? <Image src={FALLBACK_CARD_BACK_URL} alt="Card back" className={styles.card_back_image} width={128} height={192} unoptimized /> : isPlaceholder ? <span className={styles.card_text}>Empty Slot</span> : (
+                    <>
+                        {imageUrl && <Image src={imageUrl} alt={getCardTitle(card!)} className={styles.card_image} width={128} height={192} />}
+                        <div className={styles.card_value}>{getCardValue(card)}</div>
+                        {card!.suit && card!.suit.name !== 'Major' && <div className={styles.card_suit}><i className={`${SUIT_ICONS[card!.suit.id]}`}></i></div>}
+                    </>
+                )}
+            </div>
+        </Tooltip>
     );
 };
 

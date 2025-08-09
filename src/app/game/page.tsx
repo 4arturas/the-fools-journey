@@ -37,8 +37,13 @@ const GamePage: React.FC = () => {
     const [helperModal, setHelperModal] = useState({ open: false, card: null as Card | null });
     const [gameStatusModal, setGameStatusModal] = useState({ open: false, title: '', content: '' });
 
-    // TODO: could not we have interface for every card?
-    const heroCard: Card = { id: 'hero-card', title: 'THE FOOL', type: CardType.Major, rank: 0, suit: { id: 'major', name: 'Major' }, cardId: 0, isDoubled: false, isPlaceholder: false };
+
+    const heroCard: Card = { id: 'hero-card',
+        // TODO: could not we have map? Like in the image bellow
+        // [0, "THE FOOL", 1: "THE MAGICIAN", ]
+        title: 'THE FOOL',
+        type: CardType.Major,
+        rank: 0, suit: { id: 'major', name: 'Major' }, cardId: 0, isDoubled: false, isPlaceholder: false };
 
     const drawAdventureLine = () => {
         setGameState(prev => {

@@ -3,6 +3,7 @@ import { Meta, StoryObj } from '@storybook/nextjs-vite';
 import {waitFor} from 'storybook/test';
 import ChallengeModal from './ChallengeModal';
 import { DECK_DATA } from '../rules';
+import { CardType } from '../types';
 
 const meta: Meta<typeof ChallengeModal> = {
   title: 'Game/ChallengeModal',
@@ -21,10 +22,10 @@ type Story = StoryObj<typeof ChallengeModal>;
 export const Default: Story = {
   args: {
     open: true,
-    challengeCard: { id: 'challenge-mock', title: 'Major Arcana 15', type: 'major', rank: 15, suit: 'Major', cardId: 15, isDoubled: false },
+    challengeCard: { id: 'challenge-mock', title: 'Major Arcana 15', type: CardType.Major, rank: 15, suit: { id: 'major', name: 'Major' }, cardId: 15, isDoubled: false },
     vitality: 25,
-    strengthCard: { card: { id: 'strength-mock', title: 'Wands 10', type: 'minor', rank: 10, suit: 'Wands', cardId: 10, isDoubled: false }, value: 10 },
-    volitionCard: { id: 'volition-mock', title: 'Swords 15', type: 'major', rank: 15, suit: 'Swords', cardId: 15, isDoubled: false },
+    strengthCard: { card: { id: 'strength-mock', title: 'Wands 10', type: CardType.Minor, rank: 10, suit: { id: 'wands', name: 'Wands' }, cardId: 10, isDoubled: false }, value: 10 },
+    volitionCard: { id: 'volition-mock', title: 'Swords 15', type: CardType.Major, rank: 15, suit: { id: 'swords', name: 'Swords' }, cardId: 15, isDoubled: false },
   },
   play: async () => {
     await waitFor(() => {

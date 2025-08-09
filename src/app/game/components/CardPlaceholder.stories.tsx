@@ -1,5 +1,6 @@
 
 import { Meta, StoryObj } from '@storybook/nextjs-vite';
+import { CardType } from '../types';
 import CardPlaceholder from './CardPlaceholder';
 import {within, expect} from "storybook/test";
 
@@ -41,9 +42,9 @@ export const MajorArcana: Story = {
     card: {
       id: 'major-10',
       title: 'The Wheel of Fortune',
-      type: 'major',
+      type: CardType.Major,
       rank: 10,
-      suit: 'Major',
+      suit: { id: 'major', name: 'Major' },
       cardId: 10,
       isDoubled: false,
     },
@@ -56,9 +57,9 @@ export const MinorArcana: Story = {
     card: {
       id: 'wands-8',
       title: 'Wands 8',
-      type: 'minor',
+      type: CardType.Minor,
       rank: 8,
-      suit: 'Wands',
+      suit: { id: 'wands', name: 'Wands' },
       cardId: 30,
       isDoubled: false,
     },
