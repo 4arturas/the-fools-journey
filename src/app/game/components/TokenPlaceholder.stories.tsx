@@ -1,6 +1,6 @@
 
 import { Meta, StoryObj } from '@storybook/nextjs-vite';
-import { within, expect } from '@storybook/test';
+import {within, expect} from 'storybook/test';
 import TokenPlaceholder from './TokenPlaceholder';
 
 const meta: Meta<typeof TokenPlaceholder> = {

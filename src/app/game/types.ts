@@ -8,5 +8,5 @@ export interface Card {
     cardId: number;
     isDoubled: boolean;
     isPlaceholder?: boolean;
-    zone?: string;
+    zone?: string[];
 }
