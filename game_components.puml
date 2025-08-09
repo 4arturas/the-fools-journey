@@ -1,0 +1,69 @@
+@startuml
+skinparam componentStyle rectangle
+
+package "Game Application" {
+  component "GamePage" as GamePage
+  component "CardPlaceholder" as CardPlaceholder
+  component "DeployHelperModal" as DeployHelperModal
+  component "ChallengeModal" as ChallengeModal
+  component "FutureCardsStack" as FutureCardsStack
+  component "DroppableArea" as DroppableArea
+  component "GameStatusModal" as GameStatusModal
+  component "TokenPlaceholder" as TokenPlaceholder
+
+  GamePage --> CardPlaceholder
+  GamePage --> DeployHelperModal
+  GamePage --> ChallengeModal
+  GamePage --> FutureCardsStack
+  GamePage --> DroppableArea
+  GamePage --> GameStatusModal
+  GamePage --> TokenPlaceholder
+}
+
+package "External Libraries" {
+  component "Ant Design" as Antd
+  component "Next.js Image" as NextImage
+  component "FontAwesome" as FontAwesome
+}
+
+package "Game Core Modules" {
+  component "types.ts" as GameTypes
+  component "rules.ts" as GameRules
+  component "data.ts" as GameData
+  component "game.module.css" as GameStyles
+}
+
+GamePage --> Antd
+GamePage --> FontAwesome
+CardPlaceholder --> Antd
+CardPlaceholder --> NextImage
+DeployHelperModal --> Antd
+ChallengeModal --> Antd
+FutureCardsStack --> Antd
+DroppableArea --> Antd
+
+GamePage --> GameTypes
+GamePage --> GameRules
+GamePage --> GameData
+GamePage --> GameStyles
+
+CardPlaceholder --> GameTypes
+CardPlaceholder --> GameRules
+CardPlaceholder --> GameData
+CardPlaceholder --> GameStyles
+
+DeployHelperModal --> GameTypes
+DeployHelperModal --> GameStyles
+
+ChallengeModal --> GameTypes
+ChallengeModal --> GameRules
+ChallengeModal --> GameStyles
+
+FutureCardsStack --> GameTypes
+FutureCardsStack --> GameStyles
+
+DroppableArea --> GameStyles
+
+TokenPlaceholder --> GameStyles
+
+@enduml

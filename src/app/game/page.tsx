@@ -156,7 +156,6 @@ const GamePage: React.FC = () => {
             else if (sourceZone === 'satchel') nextState.satchelCards = nextState.satchelCards.filter(c => c.id !== card.id);
             else if (sourceZone === 'past') nextState.pastCards = nextState.pastCards.filter(c => c.id !== card.id);
 
-            // TODO: targetZone an sourceZone can be also interface or type, or something else
             if (targetZone === 'wisdom') nextState.wisdomCards.push(card);
             else if (targetZone === 'strength') nextState.strengthCard = { card: card, value: getCardValue(card) };
             else if (targetZone === 'volition') nextState.volitionCard = card;

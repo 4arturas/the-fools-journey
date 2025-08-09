@@ -20,6 +20,18 @@ export interface GameState {
     vitality: number;
 }
 
+export enum Zone {
+    Major = 'major',
+    Minor = 'minor',
+    Past = 'past',
+    Wisdom = 'wisdom',
+    Strength = 'strength',
+    Volition = 'volition',
+    Satchel = 'satchel',
+    Adventure = 'adventure',
+    Future = 'future'
+}
+
 export type GameZone = 'past' | 'wisdom' | 'strength' | 'volition' | 'satchel' | 'adventure' | 'future';
 
 export interface Card {
@@ -31,5 +43,5 @@ export interface Card {
     cardId: number;
     isDoubled: boolean;
     isPlaceholder?: boolean;
-    zone?: string[];
+    zone?: GameZone;
 }

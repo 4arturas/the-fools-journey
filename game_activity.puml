@@ -1,0 +1,69 @@
+@startuml
+start
+
+:Initialize Game State;
+:Render Game UI;
+
+fork
+  :Monitor Adventure Cards & Future Deck;
+  if (Adventure Line empty AND Future Deck not empty) then (yes)
+    :Draw Adventure Line;
+  endif
+  if (Future Deck empty AND Adventure Line empty) then (yes)
+    :Display Game Won Modal;
+  endif
+  if (Vitality <= 0) then (yes)
+    :Display Game Over Modal;
+  endif
+fork again
+  :User Interaction;
+  split
+    :Drag Card;
+    :Handle Drag Start;
+    :Handle Drag Over;
+    :Handle Drop;
+    if (Valid Drop Zone) then (yes)
+      :Update Game State based on Drop Zone;
+    else (no)
+      :Display Error Message;
+    endif
+  split again
+    :Click Card;
+    if (Card is Major Arcana) then (yes)
+      :Open Challenge Modal;
+      :Handle Resolve Challenge;
+      if (Challenge Resolved Successfully) then (yes)
+        :Update Game State;
+        :Display Success Message;
+      else (no)
+        :Display Error Message;
+      endif
+    else if (Card is Helper (rank 11-14) AND Wisdom Card available) then (yes)
+      :Open Deploy Helper Modal;
+      :Handle Deploy Helper;
+      :Update Game State;
+      :Display Success Message;
+    else if (Card is Helper (rank 11-14) AND Wisdom Card not available) then (yes)
+      :Display Error Message ("Need Wisdom card");
+    else if (Card is Cups Suit) then (yes)
+      :Restore Vitality;
+      :Update Game State;
+      :Display Success Message;
+    else if (Card is Rank 1) then (yes)
+      :Reset Adventure Line;
+      :Update Game State;
+      :Display Success Message;
+    else (other card click)
+      :No specific action;
+    endif
+  split again
+    :Click Help Icon;
+    :Open Help Modal;
+  split again
+    :Click Restart Game Button;
+    :Reload Page;
+  end split
+end fork
+
+stop
+@enduml
