@@ -1,8 +1,8 @@
 
 import { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { within, expect } from 'storybook/test';
-import DroppableArea from './DroppableArea';
-import CardPlaceholder from './CardPlaceholder';
+import DroppableArea from '../components/DroppableArea';
+import CardPlaceholder from '../components/CardPlaceholder';
 import { DECK_DATA } from '../rules';
 
 const meta: Meta<typeof DroppableArea> = {

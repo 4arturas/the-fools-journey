@@ -1,7 +1,7 @@
 
 import { Meta, StoryObj } from '@storybook/nextjs-vite';
 import {within, expect} from 'storybook/test';
-import TokenPlaceholder from './TokenPlaceholder';
+import TokenPlaceholder from '../components/TokenPlaceholder';
 
 const meta: Meta<typeof TokenPlaceholder> = {
   title: 'Game/TokenPlaceholder',

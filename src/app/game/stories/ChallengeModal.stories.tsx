@@ -1,7 +1,7 @@
 
 import { Meta, StoryObj } from '@storybook/nextjs-vite';
 import {waitFor} from 'storybook/test';
-import ChallengeModal from './ChallengeModal';
+import ChallengeModal from '../components/ChallengeModal';
 import { DECK_DATA } from '../rules';
 import { CardType } from '../types';
 

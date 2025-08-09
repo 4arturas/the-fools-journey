@@ -1,7 +1,7 @@
 
 import { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { expect, screen, waitFor } from 'storybook/test';
-import GameStatusModal from './GameStatusModal';
+import GameStatusModal from '../components/GameStatusModal';
 
 const meta: Meta<typeof GameStatusModal> = {
   title: 'Game/GameStatusModal',

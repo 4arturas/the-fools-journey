@@ -1,7 +1,7 @@
 
 import { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { CardType } from '../types';
-import CardPlaceholder from './CardPlaceholder';
+import CardPlaceholder from '../components/CardPlaceholder';
 import {within, expect} from "storybook/test";
 
 

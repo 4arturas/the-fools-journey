@@ -1,7 +1,7 @@
 
 import { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { within, expect } from 'storybook/test';
-import FutureCardsStack from './FutureCardsStack';
+import FutureCardsStack from '../components/FutureCardsStack';
 import { DECK_DATA } from '../rules';
 
 const meta: Meta<typeof FutureCardsStack> = {

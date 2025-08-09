@@ -1,6 +1,6 @@
 
 import { Meta, StoryObj } from '@storybook/nextjs-vite';
-import DeployHelperModal from './DeployHelperModal';
+import DeployHelperModal from '../components/DeployHelperModal';
 import { DECK_DATA } from '../rules';
 import {waitFor} from 'storybook/test';
 
