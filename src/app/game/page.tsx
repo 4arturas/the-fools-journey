@@ -6,7 +6,7 @@ import { Modal, Tooltip, Button, message } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleQuestion } from '@fortawesome/free-solid-svg-icons';
 import { HELP_DESCRIPTIONS, shuffleDeck } from './data';
-import { Card } from './types';
+import {Card, CardType, GameZone, GameState} from './types';
 import { DECK_DATA, getCardValue } from './rules';
 import CardPlaceholder from './components/CardPlaceholder';
 import FutureCardsStack from './components/FutureCardsStack';
@@ -20,23 +20,25 @@ import styles from './game.module.css';
 
 
 const GamePage: React.FC = () => {
-    const [gameState, setGameState] = useState({
-        adventureCards: [] as Card[],
-        pastCards: [] as Card[],
+    const state: GameState =  {
+        adventureCards: [],
+        pastCards: [],
         futureCards: shuffleDeck(DECK_DATA.filter(c => c.rank !== 0)),
-        wisdomCards: [] as Card[],
-        strengthCard: { card: null as Card | null, value: 0 },
-        volitionCard: null as Card | null,
-        satchelCards: [] as Card[],
+        wisdomCards: [],
+        strengthCard: { card: null, value: 0 },
+        volitionCard: null,
+        satchelCards: [],
         vitality: 25,
-    });
-    const [draggedCard, setDraggedCard] = useState<{ card: Card, sourceZone: string } | null>(null);
+    }
+    const [gameState, setGameState] = useState<GameState>(state);
+    const [draggedCard, setDraggedCard] = useState<{ card: Card, sourceZone: GameZone } | null>(null);
     const [helpModal, setHelpModal] = useState({ open: false, title: '', description: '' });
     const [challengeModal, setChallengeModal] = useState({ open: false, card: null as Card | null });
     const [helperModal, setHelperModal] = useState({ open: false, card: null as Card | null });
     const [gameStatusModal, setGameStatusModal] = useState({ open: false, title: '', content: '' });
 
-    const heroCard: Card = { id: 'hero-card', title: 'THE FOOL', type: 'major', rank: 0, suit: 'Major', cardId: 0, isDoubled: false, isPlaceholder: false };
+    // TODO: could not we have interface for every card?
+    const heroCard: Card = { id: 'hero-card', title: 'THE FOOL', type: CardType.Major, rank: 0, suit: { id: 'major', name: 'Major' }, cardId: 0, isDoubled: false, isPlaceholder: false };
 
     const drawAdventureLine = () => {
         setGameState(prev => {
@@ -69,14 +71,14 @@ const GamePage: React.FC = () => {
         }
     }, [gameState.adventureCards, gameState.futureCards, gameState.vitality]);
 
-    const handleDragStart = (e: React.DragEvent<HTMLDivElement>, card: Card, sourceZone: string) => {
+    const handleDragStart = (e: React.DragEvent<HTMLDivElement>, card: Card, sourceZone: GameZone) => {
         if (!card || card.isPlaceholder) return;
         setDraggedCard({ card, sourceZone });
     };
 
     const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => e.preventDefault();
 
-    const handleDrop = (e: React.DragEvent<HTMLDivElement>, targetZone: string) => {
+    const handleDrop = (e: React.DragEvent<HTMLDivElement>, targetZone: GameZone) => {
         e.preventDefault();
         if (!draggedCard) return;
 
@@ -88,7 +90,7 @@ const GamePage: React.FC = () => {
                 case 'past':
                     break;
                 case 'wisdom':
-                    if (card.suit !== 'Pentacles') {
+                    if (card.suit.name !== 'Pentacles') {
                         message.error("Only Pentacles go here.");
                         return prev;
                     }
@@ -98,7 +100,7 @@ const GamePage: React.FC = () => {
                     }
                     break;
                 case 'strength':
-                    if (card.suit !== 'Wands') {
+                    if (card.suit.name !== 'Wands') {
                         message.error("Only Wands go here.");
                         return prev;
                     }
@@ -108,7 +110,7 @@ const GamePage: React.FC = () => {
                     }
                     break;
                 case 'volition':
-                    if (card.suit !== 'Swords') {
+                    if (card.suit.name !== 'Swords') {
                         message.error("Only Swords go here.");
                         return prev;
                     }
@@ -118,7 +120,7 @@ const GamePage: React.FC = () => {
                     }
                     break;
                 case 'satchel':
-                    if (card.type === 'major') {
+                    if (card.type === CardType.Major) {
                         message.error("Challenges cannot go here.");
                         return prev;
                     }
@@ -149,6 +151,7 @@ const GamePage: React.FC = () => {
             else if (sourceZone === 'satchel') nextState.satchelCards = nextState.satchelCards.filter(c => c.id !== card.id);
             else if (sourceZone === 'past') nextState.pastCards = nextState.pastCards.filter(c => c.id !== card.id);
 
+            // TODO: targetZone an sourceZone can be also interface or type, or something else
             if (targetZone === 'wisdom') nextState.wisdomCards.push(card);
             else if (targetZone === 'strength') nextState.strengthCard = { card: card, value: getCardValue(card) };
             else if (targetZone === 'volition') nextState.volitionCard = card;
@@ -161,7 +164,7 @@ const GamePage: React.FC = () => {
     };
 
     const handleCardClick = (card: Card) => {
-        if (card.type === 'major') {
+        if (card.type === CardType.Major) {
             setChallengeModal({ open: true, card: card });
         } else if (card.rank > 10 && card.rank <= 14) {
             if (gameState.wisdomCards.length > 0) {
@@ -169,7 +172,7 @@ const GamePage: React.FC = () => {
             } else {
                 message.error("You need a Wisdom card to deploy a helper.");
             }
-        } else if (card.suit === 'Cups') {
+        } else if (card.suit.name === 'Cups') {
             const value = getCardValue(card);
             setGameState(p => {
                 const newVitality = Math.min(25, p.vitality + value);
