@@ -235,10 +235,10 @@ const GamePage: React.FC = () => {
 
             const doubleCard = (c: Card) => c.id === target.id ? { ...c, isDoubled: true } : c;
 
-            if (target.zone === 'strength') newState.strengthCard = { ...p.strengthCard, card: doubleCard(p.strengthCard.card!), value: getCardValue(doubleCard(p.strengthCard.card!)) };
-            if (target.zone === 'volition') newState.volitionCard = doubleCard(p.volitionCard!);
-            if (target.zone === 'adventure') newState.adventureCards = p.adventureCards.map(doubleCard);
-            if (target.zone === 'satchel') newState.satchelCards = p.satchelCards.map(doubleCard);
+            if (target.zone?.includes('strength')) newState.strengthCard = { ...p.strengthCard, card: doubleCard(p.strengthCard.card!), value: getCardValue(doubleCard(p.strengthCard.card!)) };
+            if (target.zone?.includes('volition')) newState.volitionCard = doubleCard(p.volitionCard!);
+            if (target.zone?.includes('adventure')) newState.adventureCards = p.adventureCards.map(doubleCard);
+            if (target.zone?.includes('satchel')) newState.satchelCards = p.satchelCards.map(doubleCard);
 
             newState.adventureCards = newState.adventureCards.filter(c => c.id !== helper.id);
             newState.satchelCards = newState.satchelCards.filter(c => c.id !== helper.id);

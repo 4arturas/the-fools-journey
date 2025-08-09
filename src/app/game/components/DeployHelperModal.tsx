@@ -23,10 +23,10 @@ const DeployHelperModal: React.FC<DeployHelperModalProps> = ({ open, onCancel, h
 
     const findValidTargets = () => {
         const targets: Card[] = [];
-        if (strengthCard.card && strengthCard.card.suit === helperCard.suit) targets.push({ ...strengthCard.card, zone: 'strength' });
-        if (volitionCard && volitionCard.suit === helperCard.suit) targets.push({ ...volitionCard, zone: 'volition' });
-        adventureCards.forEach(c => { if (c.suit === helperCard.suit && c.type === 'minor' && c.rank <= 10) targets.push({ ...c, zone: 'adventure' }) });
-        satchelCards.forEach(c => { if (c.suit === helperCard.suit && c.type === 'minor' && c.rank <= 10) targets.push({ ...c, zone: 'satchel' }) });
+        if (strengthCard.card && strengthCard.card.suit === helperCard.suit) targets.push({ ...strengthCard.card, zone: ['strength'] });
+        if (volitionCard && volitionCard.suit === helperCard.suit) targets.push({ ...volitionCard, zone: ['volition'] });
+        adventureCards.forEach(c => { if (c.suit === helperCard.suit && c.type === 'minor' && c.rank <= 10) targets.push({ ...c, zone: ['adventure'] }) });
+        satchelCards.forEach(c => { if (c.suit === helperCard.suit && c.type === 'minor' && c.rank <= 10) targets.push({ ...c, zone: ['satchel'] }) });
         return targets.filter(t => t.id !== helperCard.id);
     };
 

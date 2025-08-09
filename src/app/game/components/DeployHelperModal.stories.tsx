@@ -2,7 +2,7 @@
 import { Meta, StoryObj } from '@storybook/nextjs-vite';
 import DeployHelperModal from './DeployHelperModal';
 import { DECK_DATA } from '../rules';
-import {waitFor, expect} from 'storybook/test';
+import {waitFor} from 'storybook/test';
 
 const meta: Meta<typeof DeployHelperModal> = {
   title: 'Game/DeployHelperModal',
