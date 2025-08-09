@@ -1,13 +1,14 @@
 
 'use client';
 
+import '@ant-design/v5-patch-for-react-19';
 import React, { useState, useEffect } from 'react';
 import { Modal, Tooltip, Button, message } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleQuestion } from '@fortawesome/free-solid-svg-icons';
-import { HELP_DESCRIPTIONS, shuffleDeck } from './data';
-import {Card, CardType, GameZone, GameState} from './types';
-import { DECK_DATA, getCardValue } from './rules';
+import { HELP_DESCRIPTIONS } from './data';
+import { Card, CardType, GameZone } from './types';
+import { getCardValue } from './rules';
 import CardPlaceholder from './components/CardPlaceholder';
 import FutureCardsStack from './components/FutureCardsStack';
 import DroppableArea from './components/DroppableArea';
@@ -16,65 +17,50 @@ import GameStatusModal from './components/GameStatusModal';
 import ChallengeModal from './components/ChallengeModal';
 import DeployHelperModal from './components/DeployHelperModal';
 import styles from './game.module.css';
-
-
+import { useGameReducer } from './hooks';
+import { DECK_DATA } from './rules';
+import { shuffleDeck } from './utils';
 
 const GamePage: React.FC = () => {
-    const state: GameState =  {
-        adventureCards: [],
-        pastCards: [],
-        futureCards: shuffleDeck(DECK_DATA.filter(c => c.rank !== 0)),
-        wisdomCards: [],
-        strengthCard: { card: null, value: 0 },
-        volitionCard: null,
-        satchelCards: [],
-        vitality: 25,
-    }
-    const [gameState, setGameState] = useState<GameState>(state);
+    const [gameState, dispatch] = useGameReducer();
     const [draggedCard, setDraggedCard] = useState<{ card: Card, sourceZone: GameZone } | null>(null);
     const [helpModal, setHelpModal] = useState({ open: false, title: '', description: '' });
     const [challengeModal, setChallengeModal] = useState({ open: false, card: null as Card | null });
     const [helperModal, setHelperModal] = useState({ open: false, card: null as Card | null });
     const [gameStatusModal, setGameStatusModal] = useState({ open: false, title: '', content: '' });
+    const [isInitialized, setIsInitialized] = useState(false);
 
+    useEffect(() => {
+        dispatch({ type: 'SET_DECK', payload: { deck: shuffleDeck(DECK_DATA.filter(c => c.rank !== 0)) } });
+        setIsInitialized(true);
+    }, [dispatch]);
 
-    const heroCard: Card = { id: 'hero-card',
-        // TODO: could not we have map? Like in the image bellow
-        // [0, "THE FOOL", 1: "THE MAGICIAN", ]
+    const heroCard: Card = {
+        id: 'hero-card',
         title: 'THE FOOL',
         type: CardType.Major,
-        rank: 0, suit: { id: 'major', name: 'Major' }, cardId: 0, isDoubled: false, isPlaceholder: false };
-
-    const drawAdventureLine = () => {
-        setGameState(prev => {
-            const currentNonPlaceholders = prev.adventureCards.filter(c => !c.isPlaceholder);
-            const cardsToDraw = 4 - currentNonPlaceholders.length;
-            if (prev.futureCards.length > 0 && cardsToDraw > 0) {
-                const newCards = prev.futureCards.slice(0, cardsToDraw);
-                return { ...prev, futureCards: prev.futureCards.slice(cardsToDraw), adventureCards: [...currentNonPlaceholders, ...newCards] };
-            }
-            return prev;
-        });
+        rank: 0, suit: { id: 'major', name: 'Major' }, cardId: 0, isDoubled: false, isPlaceholder: false
     };
 
     useEffect(() => {
+        if (!isInitialized) return;
         if (gameState.adventureCards.filter(c => !c.isPlaceholder).length === 0 && gameState.futureCards.length > 0) {
-            drawAdventureLine();
+            dispatch({ type: 'DRAW_ADVENTURE_LINE' });
         }
-    }, [gameState.futureCards.length, gameState.adventureCards.length, gameState.adventureCards]);
+    }, [gameState.futureCards.length, gameState.adventureCards, dispatch, isInitialized]);
 
     useEffect(() => {
+        if (!isInitialized) return;
         if (gameState.adventureCards.filter(c => !c.isPlaceholder).length <= 1 && gameState.futureCards.length > 0) {
-            drawAdventureLine();
+            dispatch({ type: 'DRAW_ADVENTURE_LINE' });
         }
         if (gameState.futureCards.length === 0 && gameState.adventureCards.filter(c => !c.isPlaceholder).length === 0) {
             setGameStatusModal({ open: true, title: "Congratulations!", content: "You have successfully completed The Fool's Journey!" });
         }
         if (gameState.vitality <= 0) {
-            setGameState(p => ({ ...p, vitality: 0 }));
             setGameStatusModal({ open: true, title: "Game Over", content: "The Fool's vitality has reached zero. Your journey ends here." });
         }
-    }, [gameState.adventureCards, gameState.futureCards, gameState.vitality]);
+    }, [gameState.adventureCards, gameState.futureCards, gameState.vitality, dispatch, isInitialized]);
 
     const handleDragStart = (e: React.DragEvent<HTMLDivElement>, card: Card, sourceZone: GameZone) => {
         if (!card || card.isPlaceholder) return;
@@ -88,82 +74,7 @@ const GamePage: React.FC = () => {
         if (!draggedCard) return;
 
         const { card, sourceZone } = draggedCard;
-        setDraggedCard(null);
-
-        setGameState(prev => {
-            switch (targetZone) {
-                case 'past':
-                    break;
-                case 'wisdom':
-                    if (card.suit.name !== 'Pentacles') {
-                        message.error("Only Pentacles go here.");
-                        return prev;
-                    }
-                    if (prev.wisdomCards.length >= 3) {
-                        message.error("Wisdom area is full.");
-                        return prev;
-                    }
-                    break;
-                case 'strength':
-                    if (card.suit.name !== 'Wands') {
-                        message.error("Only Wands go here.");
-                        return prev;
-                    }
-                    if (prev.strengthCard.card) {
-                        message.error("Strength slot is full.");
-                        return prev;
-                    }
-                    break;
-                case 'volition':
-                    if (card.suit.name !== 'Swords') {
-                        message.error("Only Swords go here.");
-                        return prev;
-                    }
-                    if (prev.volitionCard) {
-                        message.error("Volition slot is full.");
-                        return prev;
-                    }
-                    break;
-                case 'satchel':
-                    if (card.type === CardType.Major) {
-                        message.error("Challenges cannot go here.");
-                        return prev;
-                    }
-                    if (prev.satchelCards.length >= 3) {
-                        message.error("Satchel is full.");
-                        return prev;
-                    }
-                    break;
-                default:
-                    message.error("Invalid drop zone.");
-                    return prev;
-            }
-
-            const nextState = {
-                ...prev,
-                adventureCards: [...prev.adventureCards],
-                pastCards: [...prev.pastCards],
-                wisdomCards: [...prev.wisdomCards],
-                satchelCards: [...prev.satchelCards],
-                strengthCard: prev.strengthCard,
-                volitionCard: prev.volitionCard,
-            };
-
-            if (sourceZone === 'adventure') nextState.adventureCards = nextState.adventureCards.filter(c => c.id !== card.id);
-            else if (sourceZone === 'wisdom') nextState.wisdomCards = nextState.wisdomCards.filter(c => c.id !== card.id);
-            else if (sourceZone === 'strength') nextState.strengthCard = { card: null, value: 0 };
-            else if (sourceZone === 'volition') nextState.volitionCard = null;
-            else if (sourceZone === 'satchel') nextState.satchelCards = nextState.satchelCards.filter(c => c.id !== card.id);
-            else if (sourceZone === 'past') nextState.pastCards = nextState.pastCards.filter(c => c.id !== card.id);
-
-            if (targetZone === 'wisdom') nextState.wisdomCards.push(card);
-            else if (targetZone === 'strength') nextState.strengthCard = { card: card, value: getCardValue(card) };
-            else if (targetZone === 'volition') nextState.volitionCard = card;
-            else if (targetZone === 'satchel') nextState.satchelCards.push(card);
-            else if (targetZone === 'past') nextState.pastCards.push(card);
-
-            return nextState;
-        });
+        dispatch({ type: 'DROP_CARD', payload: { card, sourceZone, targetZone } });
         setDraggedCard(null);
     };
 
@@ -176,83 +87,18 @@ const GamePage: React.FC = () => {
             } else {
                 message.error("You need a Wisdom card to deploy a helper.");
             }
-        } else if (card.suit.name === 'Cups') {
-            const value = getCardValue(card);
-            setGameState(p => {
-                const newVitality = Math.min(25, p.vitality + value);
-                return { ...p, vitality: newVitality, pastCards: [...p.pastCards, card], adventureCards: p.adventureCards.filter(c => c.id !== card.id), satchelCards: p.satchelCards.filter(c => c.id !== card.id) };
-            });
-            message.success(`You restored ${value} vitality.`);
-        } else if (card.rank === 1) {
-            setGameState(p => ({ ...p, futureCards: shuffleDeck([...p.futureCards, ...p.adventureCards.filter(c => !c.isPlaceholder && c.id !== card.id)]), adventureCards: [], pastCards: [...p.pastCards, card], satchelCards: p.satchelCards.filter(c => c.id !== card.id) }));
-            message.success('You reset the adventure line.');
+        } else {
+            dispatch({ type: 'PLAY_CARD', payload: { card } });
         }
     };
 
     const handleResolveChallenge = (challenge: Card, method: string) => {
-        const cost = challenge.rank;
-        setGameState(p => {
-            const newState = { ...p };
-            let success = false;
-            if (method === 'volition' && p.volitionCard) {
-                const volitionValue = getCardValue(p.volitionCard);
-                if (volitionValue >= cost) {
-                    newState.pastCards = [...p.pastCards, challenge, p.volitionCard];
-                    newState.volitionCard = null;
-                    success = true;
-                } else {
-                    challenge.rank -= volitionValue;
-                    newState.pastCards = [...p.pastCards, p.volitionCard];
-                    newState.volitionCard = null;
-                }
-            } else if (method === 'strength' && p.strengthCard.card) {
-                const strengthValue = getCardValue(p.strengthCard.card);
-                if (strengthValue >= cost) {
-                    newState.strengthCard = { card: { ...p.strengthCard.card, rank: strengthValue - cost, isDoubled: false }, value: strengthValue - cost };
-                    newState.pastCards = [...p.pastCards, challenge];
-                    success = true;
-                } else {
-                    newState.vitality -= (cost - strengthValue);
-                    newState.pastCards = [...p.pastCards, p.strengthCard.card];
-                    newState.strengthCard = { card: null, value: 0 };
-                }
-            } else if (method === 'vitality' && p.vitality >= cost) {
-                newState.vitality -= cost;
-                newState.pastCards = [...p.pastCards, challenge];
-                success = true;
-            }
-
-            if (success) {
-                newState.adventureCards = p.adventureCards.filter(c => c.id !== challenge.id);
-                message.success(`Challenge resolved with ${method}.`);
-            } else {
-                message.error(`Could not resolve challenge with ${method}.`);
-            }
-            return newState;
-        });
+        dispatch({ type: 'RESOLVE_CHALLENGE', payload: { challenge, method } });
         setChallengeModal({ open: false, card: null });
     };
 
     const handleDeployHelper = (helper: Card, target: Card) => {
-        setGameState(p => {
-            const newState = { ...p };
-            const spentWisdom = p.wisdomCards[0];
-            newState.wisdomCards = p.wisdomCards.slice(1);
-            newState.pastCards = [...p.pastCards, spentWisdom, helper];
-
-            const doubleCard = (c: Card) => c.id === target.id ? { ...c, isDoubled: true } : c;
-
-            if (target.zone?.includes('strength')) newState.strengthCard = { ...p.strengthCard, card: doubleCard(p.strengthCard.card!), value: getCardValue(doubleCard(p.strengthCard.card!)) };
-            if (target.zone?.includes('volition')) newState.volitionCard = doubleCard(p.volitionCard!);
-            if (target.zone?.includes('adventure')) newState.adventureCards = p.adventureCards.map(doubleCard);
-            if (target.zone?.includes('satchel')) newState.satchelCards = p.satchelCards.map(doubleCard);
-
-            newState.adventureCards = newState.adventureCards.filter(c => c.id !== helper.id);
-            newState.satchelCards = newState.satchelCards.filter(c => c.id !== helper.id);
-
-            message.success(`Used ${helper.title} to double the value of ${target.title}.`);
-            return newState;
-        });
+        dispatch({ type: 'DEPLOY_HELPER', payload: { helper, target } });
         setHelperModal({ open: false, card: null });
     };
 
@@ -284,19 +130,19 @@ const GamePage: React.FC = () => {
                 </div>
 
                 <div className={`${styles.flex_row_container} ${styles.middle}`}>
-                    <DroppableArea title="Wisdom" onDrop={(e) => handleDrop(e, 'wisdom')} onDragOver={handleDragOver} isEmpty={gameState.wisdomCards.length === 0} onHelpClick={() => setHelpModal({ open: true, title: 'Wisdom', description: HELP_DESCRIPTIONS.wisdom })} zoneId="wisdom">
-                        {gameState.wisdomCards.map(card => <CardPlaceholder key={card.id} id={card.id} card={card} onDragStart={(e) => handleDragStart(e, card, 'wisdom')} />)}
+                    <DroppableArea title="Wisdom" onDrop={(e) => handleDrop(e, 'wisdom')} onDragOver={handleDragOver} isEmpty={gameState.wisdomCards.length === 0} onHelpClick={() => setHelpModal({ open: true, title: 'Wisdom', description: HELP_DESCRIPTIONS.wisdom })} zoneId="wisdom" className={styles.area_outline_wisdom}>
+                        {gameState.wisdomCards.map(card => <CardPlaceholder key={card.id} id={card.id} card={card} onDragStart={(e) => handleDragStart(e, card, 'wisdom')} zone="wisdom" />)}
                     </DroppableArea>
-                    <DroppableArea title={`Strength (${getCardValue(gameState.strengthCard.card)})`} onDrop={(e) => handleDrop(e, 'strength')} onDragOver={handleDragOver} isEmpty={!gameState.strengthCard.card} onHelpClick={() => setHelpModal({ open: true, title: 'Strength', description: HELP_DESCRIPTIONS.strength })} zoneId="strength">
-                        {gameState.strengthCard.card && <CardPlaceholder id={gameState.strengthCard.card.id} card={gameState.strengthCard.card} onDragStart={(e) => handleDragStart(e, gameState.strengthCard.card!, 'strength')} onClick={() => handleCardClick(gameState.strengthCard.card!)} />}
+                    <DroppableArea title={`Strength (${getCardValue(gameState.strengthCard.card)})`} onDrop={(e) => handleDrop(e, 'strength')} onDragOver={handleDragOver} isEmpty={!gameState.strengthCard.card} onHelpClick={() => setHelpModal({ open: true, title: 'Strength', description: HELP_DESCRIPTIONS.strength })} zoneId="strength" className={styles.area_outline_strength}>
+                        {gameState.strengthCard.card && <CardPlaceholder id={gameState.strengthCard.card.id} card={gameState.strengthCard.card} onDragStart={(e) => handleDragStart(e, gameState.strengthCard.card!, 'strength')} onClick={() => handleCardClick(gameState.strengthCard.card!)} zone="strength" />}
                     </DroppableArea>
                     <div className={`${styles.droppable_area_container} ${styles.hero_card}`}>
                         <Tooltip title="What is the Hero card?"><FontAwesomeIcon icon={faCircleQuestion} className={styles.help_icon} onClick={() => setHelpModal({ open: true, title: 'Hero', description: HELP_DESCRIPTIONS.hero })} /></Tooltip>
                         <h3 className={styles.subtitle}>Hero</h3>
                         <div className={styles.droppable_area} style={{minHeight: 'auto'}}><CardPlaceholder card={heroCard} /></div>
                     </div>
-                    <DroppableArea title={`Volition (${getCardValue(gameState.volitionCard)})`} onDrop={(e) => handleDrop(e, 'volition')} onDragOver={handleDragOver} isEmpty={!gameState.volitionCard} onHelpClick={() => setHelpModal({ open: true, title: 'Volition', description: HELP_DESCRIPTIONS.volition })} zoneId="volition">
-                        {gameState.volitionCard && <CardPlaceholder id={gameState.volitionCard.id} card={gameState.volitionCard} onDragStart={(e) => handleDragStart(e, gameState.volitionCard!, 'volition')} onClick={() => handleCardClick(gameState.volitionCard!)} />}
+                    <DroppableArea title={`Volition (${getCardValue(gameState.volitionCard)})`} onDrop={(e) => handleDrop(e, 'volition')} onDragOver={handleDragOver} isEmpty={!gameState.volitionCard} onHelpClick={() => setHelpModal({ open: true, title: 'Volition', description: HELP_DESCRIPTIONS.volition })} zoneId="volition" className={styles.area_outline_volition}>
+                        {gameState.volitionCard && <CardPlaceholder id={gameState.volitionCard.id} card={gameState.volitionCard} onDragStart={(e) => handleDragStart(e, gameState.volitionCard!, 'volition')} onClick={() => handleCardClick(gameState.volitionCard!)} zone="volition" />}
                     </DroppableArea>
                     <DroppableArea title="Satchel" onDrop={(e) => handleDrop(e, 'satchel')} onDragOver={handleDragOver} isEmpty={gameState.satchelCards.length === 0} onHelpClick={() => setHelpModal({ open: true, title: 'Satchel', description: HELP_DESCRIPTIONS.satchel })} zoneId="satchel">
                         {gameState.satchelCards.map(card => <CardPlaceholder key={card.id} id={card.id} card={card} onDragStart={(e) => handleDragStart(e, card, 'satchel')} onClick={() => handleCardClick(card)} />)}

@@ -11,10 +11,11 @@ interface DroppableAreaProps {
     isEmpty: boolean;
     onHelpClick: () => void;
     zoneId: string;
+    className?: string;
 }
 
-const DroppableArea: React.FC<DroppableAreaProps> = ({ title, children, onDrop, onDragOver, isEmpty, onHelpClick, zoneId }) => (
-    <div className={styles.droppable_area_container}>
+const DroppableArea: React.FC<DroppableAreaProps> = ({ title, children, onDrop, onDragOver, isEmpty, onHelpClick, zoneId, className = '' }) => (
+    <div className={`${styles.droppable_area_container} ${className}`}>
         <Tooltip title={`What is the ${title} area?`}><i className="fa-solid fa-circle-question help-icon" onClick={onHelpClick}></i></Tooltip>
         <h3>{title}</h3>
         <div onDrop={(e) => onDrop(e, zoneId)} onDragOver={onDragOver} className={styles.droppable_area}>

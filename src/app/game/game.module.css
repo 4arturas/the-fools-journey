@@ -302,3 +302,31 @@
         width: 16.666667%;
     }
 }
+
+.card_face.card_outline_major {
+    border: 3px solid gold;
+}
+
+.card_face.card_outline_minor {
+    border: 3px solid silver;
+}
+
+.card_face.card_outline_volition {
+    border: 3px solid green;
+}
+.card_face.card_outline_wisdom {
+    border: 3px solid purple;
+}
+.card_face.card_outline_strength {
+    border: 3px solid blue;
+}
+
+.area_outline_volition {
+    border: 3px solid green;
+}
+.area_outline_wisdom {
+    border: 3px solid purple;
+}
+.area_outline_strength {
+    border: 3px solid blue;
+}

@@ -1,5 +1,5 @@
 
-import { Card, Suit } from "./types";
+import { Suit } from "./types";
 
 export const CARD_BACK_URL = "https://www.wopc.co.uk/images/blog/2018/12/DLR_Figured_2.jpg";
 export const FALLBACK_CARD_BACK_URL = "https://placehold.co/128x192/1e3a8a/ffffff?text=Card+Back";
@@ -33,11 +33,4 @@ export const HELP_DESCRIPTIONS: { [key: string]: string } = {
     tokens: "These are your **Vitality** tokens. You start with 25. Losing all of your vitality means the end of your journey."
 };
 
-export const shuffleDeck = (deck: Card[]) => {
-    const shuffled = [...deck];
-    for (let i = shuffled.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-    }
-    return shuffled;
-};
+
