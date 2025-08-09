@@ -4,15 +4,7 @@ import { Tooltip } from 'antd';
 import CardPlaceholder from './CardPlaceholder';
 import styles from '../game.module.css';
 
-interface Card {
-    id: string;
-    title: string;
-    type: string;
-    rank: number;
-    suit: string;
-    cardId: number;
-    isDoubled: boolean;
-}
+import { Card } from '../types';
 
 interface FutureCardsStackProps {
     cards: Card[];

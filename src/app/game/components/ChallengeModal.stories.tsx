@@ -2,7 +2,7 @@
 import { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { expect, screen, waitFor } from '@storybook/test';
 import ChallengeModal from './ChallengeModal';
-import { DECK_DATA } from '../data';
+import { DECK_DATA } from '../rules';
 
 const meta: Meta<typeof ChallengeModal> = {
   title: 'Game/ChallengeModal',
@@ -39,7 +39,7 @@ export const Default: Story = {
 export const NoOptions: Story = {
   args: {
     open: true,
-    challengeCard: DECK_DATA.find(c => c.rank === 15), // The Devil
+    challengeCard: DECK_DATA.find(c => c.rank === 15)!, // The Devil
     vitality: 10,
     strengthCard: { card: null, value: 0 },
     volitionCard: null,

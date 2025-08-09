@@ -2,7 +2,7 @@
 import { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { expect, screen, waitFor } from '@storybook/test';
 import DeployHelperModal from './DeployHelperModal';
-import { DECK_DATA } from '../data';
+import { DECK_DATA } from '../rules';
 
 const meta: Meta<typeof DeployHelperModal> = {
   title: 'Game/DeployHelperModal',
@@ -21,11 +21,11 @@ type Story = StoryObj<typeof DeployHelperModal>;
 export const Default: Story = {
   args: {
     open: true,
-    helperCard: DECK_DATA.find(c => c.rank > 10 && c.suit === 'Wands'),
-    wisdomCards: [DECK_DATA.find(c => c.suit === 'Pentacles')],
-    strengthCard: { card: DECK_DATA.find(c => c.suit === 'Wands' && c.rank < 10), value: 5 },
+    helperCard: DECK_DATA.find(c => c.rank > 10 && c.suit === 'Wands') || DECK_DATA[0],
+    wisdomCards: [DECK_DATA.find(c => c.suit === 'Pentacles')!],
+    strengthCard: { card: DECK_DATA.find(c => c.suit === 'Wands' && c.rank < 10) || null, value: 5 },
     volitionCard: null,
-    adventureCards: [DECK_DATA.find(c => c.suit === 'Wands' && c.rank < 10)],
+    adventureCards: [DECK_DATA.find(c => c.suit === 'Wands' && c.rank < 10)!],
     satchelCards: [],
   },
   play: async () => {

@@ -1,19 +1,11 @@
 
 import Image from 'next/image';
 import React from 'react';
-import { FALLBACK_CARD_BACK_URL, SUIT_ICONS, getCardValue } from '../data';
+import { FALLBACK_CARD_BACK_URL, SUIT_ICONS } from '../data';
+import { getCardValue } from '../rules';
 import styles from '../game.module.css';
 
-interface Card {
-    id: string;
-    title: string;
-    type: string;
-    rank: number;
-    suit: string;
-    cardId: number;
-    isDoubled: boolean;
-    isPlaceholder?: boolean;
-}
+import { Card } from '../types';
 
 interface CardPlaceholderProps {
     isBack?: boolean;

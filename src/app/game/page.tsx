@@ -5,7 +5,9 @@ import React, { useState, useEffect } from 'react';
 import { Modal, Tooltip, Button, message } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleQuestion } from '@fortawesome/free-solid-svg-icons';
-import { DECK_DATA, HELP_DESCRIPTIONS, shuffleDeck, getCardValue } from './data';
+import { HELP_DESCRIPTIONS, shuffleDeck } from './data';
+import { Card } from './types';
+import { DECK_DATA, getCardValue } from './rules';
 import CardPlaceholder from './components/CardPlaceholder';
 import FutureCardsStack from './components/FutureCardsStack';
 import DroppableArea from './components/DroppableArea';
@@ -15,17 +17,7 @@ import ChallengeModal from './components/ChallengeModal';
 import DeployHelperModal from './components/DeployHelperModal';
 import styles from './game.module.css';
 
-interface Card {
-    id: string;
-    title: string;
-    type: string;
-    rank: number;
-    suit: string;
-    cardId: number;
-    isDoubled: boolean;
-    isPlaceholder?: boolean;
-    zone?: string;
-}
+
 
 const GamePage: React.FC = () => {
     const [gameState, setGameState] = useState({
@@ -179,7 +171,10 @@ const GamePage: React.FC = () => {
             }
         } else if (card.suit === 'Cups') {
             const value = getCardValue(card);
-            setGameState(p => ({ ...p, vitality: Math.min(25, p.vitality + value), pastCards: [...p.pastCards, card], adventureCards: p.adventureCards.filter(c => c.id !== card.id), satchelCards: p.satchelCards.filter(c => c.id !== card.id) }));
+            setGameState(p => {
+                const newVitality = Math.min(25, p.vitality + value);
+                return { ...p, vitality: newVitality, pastCards: [...p.pastCards, card], adventureCards: p.adventureCards.filter(c => c.id !== card.id), satchelCards: p.satchelCards.filter(c => c.id !== card.id) };
+            });
             message.success(`You restored ${value} vitality.`);
         } else if (card.rank === 1) {
             setGameState(p => ({ ...p, futureCards: shuffleDeck([...p.futureCards, ...p.adventureCards.filter(c => !c.isPlaceholder && c.id !== card.id)]), adventureCards: [], pastCards: [...p.pastCards, card], satchelCards: p.satchelCards.filter(c => c.id !== card.id) }));
@@ -192,20 +187,28 @@ const GamePage: React.FC = () => {
         setGameState(p => {
             const newState = { ...p };
             let success = false;
-            if (method === 'volition' && p.volitionCard && getCardValue(p.volitionCard) >= cost) {
-                newState.pastCards = [...p.pastCards, challenge, p.volitionCard];
-                newState.volitionCard = null;
-                success = true;
+            if (method === 'volition' && p.volitionCard) {
+                const volitionValue = getCardValue(p.volitionCard);
+                if (volitionValue >= cost) {
+                    newState.pastCards = [...p.pastCards, challenge, p.volitionCard];
+                    newState.volitionCard = null;
+                    success = true;
+                } else {
+                    challenge.rank -= volitionValue;
+                    newState.pastCards = [...p.pastCards, p.volitionCard];
+                    newState.volitionCard = null;
+                }
             } else if (method === 'strength' && p.strengthCard.card) {
                 const strengthValue = getCardValue(p.strengthCard.card);
                 if (strengthValue >= cost) {
                     newState.strengthCard = { card: { ...p.strengthCard.card, rank: strengthValue - cost, isDoubled: false }, value: strengthValue - cost };
+                    newState.pastCards = [...p.pastCards, challenge];
+                    success = true;
                 } else {
                     newState.vitality -= (cost - strengthValue);
+                    newState.pastCards = [...p.pastCards, p.strengthCard.card];
                     newState.strengthCard = { card: null, value: 0 };
                 }
-                newState.pastCards = [...p.pastCards, challenge, p.strengthCard.card];
-                success = true;
             } else if (method === 'vitality' && p.vitality >= cost) {
                 newState.vitality -= cost;
                 newState.pastCards = [...p.pastCards, challenge];
@@ -278,7 +281,7 @@ const GamePage: React.FC = () => {
                         {gameState.wisdomCards.map(card => <CardPlaceholder key={card.id} id={card.id} card={card} onDragStart={(e) => handleDragStart(e, card, 'wisdom')} />)}
                     </DroppableArea>
                     <DroppableArea title={`Strength (${getCardValue(gameState.strengthCard.card)})`} onDrop={(e) => handleDrop(e, 'strength')} onDragOver={handleDragOver} isEmpty={!gameState.strengthCard.card} onHelpClick={() => setHelpModal({ open: true, title: 'Strength', description: HELP_DESCRIPTIONS.strength })} zoneId="strength">
-                        {gameState.strengthCard.card && <CardPlaceholder id={gameState.strengthCard.card.id} card={gameState.strengthCard.card} onDragStart={(e) => handleDragStart(e, gameState.strengthCard.card, 'strength')} onClick={() => handleCardClick(gameState.strengthCard.card!)} />}
+                        {gameState.strengthCard.card && <CardPlaceholder id={gameState.strengthCard.card.id} card={gameState.strengthCard.card} onDragStart={(e) => handleDragStart(e, gameState.strengthCard.card!, 'strength')} onClick={() => handleCardClick(gameState.strengthCard.card!)} />}
                     </DroppableArea>
                     <div className={`${styles.droppable_area_container} ${styles.hero_card}`}>
                         <Tooltip title="What is the Hero card?"><FontAwesomeIcon icon={faCircleQuestion} className={styles.help_icon} onClick={() => setHelpModal({ open: true, title: 'Hero', description: HELP_DESCRIPTIONS.hero })} /></Tooltip>
@@ -286,7 +289,7 @@ const GamePage: React.FC = () => {
                         <div className={styles.droppable_area} style={{minHeight: 'auto'}}><CardPlaceholder card={heroCard} /></div>
                     </div>
                     <DroppableArea title={`Volition (${getCardValue(gameState.volitionCard)})`} onDrop={(e) => handleDrop(e, 'volition')} onDragOver={handleDragOver} isEmpty={!gameState.volitionCard} onHelpClick={() => setHelpModal({ open: true, title: 'Volition', description: HELP_DESCRIPTIONS.volition })} zoneId="volition">
-                        {gameState.volitionCard && <CardPlaceholder id={gameState.volitionCard.id} card={gameState.volitionCard} onDragStart={(e) => handleDragStart(e, gameState.volitionCard, 'volition')} onClick={() => handleCardClick(gameState.volitionCard!)} />}
+                        {gameState.volitionCard && <CardPlaceholder id={gameState.volitionCard.id} card={gameState.volitionCard} onDragStart={(e) => handleDragStart(e, gameState.volitionCard!, 'volition')} onClick={() => handleCardClick(gameState.volitionCard!)} />}
                     </DroppableArea>
                     <DroppableArea title="Satchel" onDrop={(e) => handleDrop(e, 'satchel')} onDragOver={handleDragOver} isEmpty={gameState.satchelCards.length === 0} onHelpClick={() => setHelpModal({ open: true, title: 'Satchel', description: HELP_DESCRIPTIONS.satchel })} zoneId="satchel">
                         {gameState.satchelCards.map(card => <CardPlaceholder key={card.id} id={card.id} card={card} onDragStart={(e) => handleDragStart(e, card, 'satchel')} onClick={() => handleCardClick(card)} />)}

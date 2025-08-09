@@ -2,7 +2,7 @@
 import { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { within, expect } from '@storybook/test';
 import FutureCardsStack from './FutureCardsStack';
-import { DECK_DATA } from '../data';
+import { DECK_DATA } from '../rules';
 
 const meta: Meta<typeof FutureCardsStack> = {
   title: 'Game/FutureCardsStack',

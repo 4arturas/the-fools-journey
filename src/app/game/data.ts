@@ -1,3 +1,6 @@
+
+import { Card } from "./types";
+
 export const CARD_BACK_URL = "https://www.wopc.co.uk/images/blog/2018/12/DLR_Figured_2.jpg";
 export const FALLBACK_CARD_BACK_URL = "https://placehold.co/128x192/1e3a8a/ffffff?text=Card+Back";
 
@@ -7,20 +10,6 @@ export const SUIT_ICONS: { [key: string]: string } = {
     Pentacles: 'fa-solid fa-coins',
     Cups: 'fa-solid fa-gem',
 };
-
-export const DECK_DATA = [
-    ...Array.from({ length: 22 }, (_, i) => ({ id: `major-${i}`, title: `Major Arcana ${i}`, type: 'major', rank: i, suit: 'Major', cardId: i })),
-    ...['Wands', 'Cups', 'Swords', 'Pentacles'].flatMap((suit, suitIndex) =>
-        Array.from({ length: 14 }, (_, i) => ({
-            id: `${suit.toLowerCase()}-${i + 1}`,
-            title: `${suit} ${i + 1}`,
-            type: 'minor',
-            rank: i + 1,
-            suit: suit,
-            cardId: 22 + (suitIndex * 14) + i,
-        }))
-    ),
-].map(card => ({ ...card, isDoubled: false }));
 
 export const HELP_DESCRIPTIONS: { [key: string]: string } = {
     past: "This is the **Past**, or the discard pile. Cards you've used or discarded are placed here.",
@@ -41,12 +30,4 @@ export const shuffleDeck = (deck: Card[]) => {
         [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
     }
     return shuffled;
-};
-
-export const getCardValue = (card: Card) => {
-    if (!card) return 0;
-    let value = card.rank;
-    if (card.type === 'major') value = card.rank;
-    if (card.isDoubled) value *= 2;
-    return value;
 };
