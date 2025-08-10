@@ -330,3 +330,7 @@
 .area_outline_strength {
     border: 3px solid blue;
 }
+
+.vitality_area_full_width {
+    width: 100% !important;
+}

@@ -27,8 +27,8 @@ const ChallengeModal: React.FC<ChallengeModalProps> = ({ open, onCancel, challen
                 <CardPlaceholder card={challengeCard} />
                 <p>How will you face this challenge?</p>
                 <div className={styles.challenge_modal_actions} style={{flexDirection: 'row'}}>
-                    <Button onClick={() => handleResolve('strength')} disabled={!strengthCard.card}>Use Strength ({getCardValue(strengthCard.card)})</Button>
-                    <Button onClick={() => handleResolve('volition')} disabled={!volitionCard}>Use Volition ({getCardValue(volitionCard)})</Button>
+                    <Button style={{ backgroundColor: 'blue', borderColor: 'blue', color: 'white' }} onClick={() => handleResolve('strength')} disabled={!strengthCard.card}>Use Strength ({getCardValue(strengthCard.card)})</Button>
+                    <Button style={{ backgroundColor: 'green', borderColor: 'green', color: 'white' }} onClick={() => handleResolve('volition')} disabled={!volitionCard}>Use Volition ({getCardValue(volitionCard)})</Button>
                     <Button onClick={() => handleResolve('vitality')} disabled={vitality < challengeCard.rank}>Use Vitality ({challengeCard.rank})</Button>
                 </div>
             </div>

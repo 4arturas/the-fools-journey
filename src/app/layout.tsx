@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import '@ant-design/v5-patch-for-react-19';
-import Link from "next/link";
+
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -19,9 +19,6 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <nav>
-          <Link href="/game">Game</Link>
-        </nav>
         {children}
       </body>
     </html>

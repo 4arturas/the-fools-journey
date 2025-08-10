@@ -3,9 +3,9 @@
 
 import '@ant-design/v5-patch-for-react-19';
 import React, { useState, useEffect } from 'react';
-import { Modal, Tooltip, Button, message } from 'antd';
+import { Modal, Tooltip, message } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCircleQuestion } from '@fortawesome/free-solid-svg-icons';
+import { faCircleQuestion, faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
 import { HELP_DESCRIPTIONS } from './data';
 import { Card, CardType, GameZone } from './types';
 import { getCardValue } from './rules';
@@ -131,9 +131,11 @@ const GamePage: React.FC = () => {
 
                 <div className={`${styles.flex_row_container} ${styles.middle}`}>
                     <DroppableArea title="Wisdom" onDrop={(e) => handleDrop(e, 'wisdom')} onDragOver={handleDragOver} isEmpty={gameState.wisdomCards.length === 0} onHelpClick={() => setHelpModal({ open: true, title: 'Wisdom', description: HELP_DESCRIPTIONS.wisdom })} zoneId="wisdom" className={styles.area_outline_wisdom}>
+                        <Tooltip title="What is the Wisdom area?"><FontAwesomeIcon icon={faQuestionCircle} className={styles.help_icon} onClick={() => setHelpModal({ open: true, title: 'Wisdom', description: HELP_DESCRIPTIONS.wisdom })} /></Tooltip>
                         {gameState.wisdomCards.map(card => <CardPlaceholder key={card.id} id={card.id} card={card} onDragStart={(e) => handleDragStart(e, card, 'wisdom')} zone="wisdom" />)}
                     </DroppableArea>
                     <DroppableArea title={`Strength (${getCardValue(gameState.strengthCard.card)})`} onDrop={(e) => handleDrop(e, 'strength')} onDragOver={handleDragOver} isEmpty={!gameState.strengthCard.card} onHelpClick={() => setHelpModal({ open: true, title: 'Strength', description: HELP_DESCRIPTIONS.strength })} zoneId="strength" className={styles.area_outline_strength}>
+                        <Tooltip title="What is the Strength area?"><FontAwesomeIcon icon={faQuestionCircle} className={styles.help_icon} onClick={() => setHelpModal({ open: true, title: 'Strength', description: HELP_DESCRIPTIONS.strength })} /></Tooltip>
                         {gameState.strengthCard.card && <CardPlaceholder id={gameState.strengthCard.card.id} card={gameState.strengthCard.card} onDragStart={(e) => handleDragStart(e, gameState.strengthCard.card!, 'strength')} onClick={() => handleCardClick(gameState.strengthCard.card!)} zone="strength" />}
                     </DroppableArea>
                     <div className={`${styles.droppable_area_container} ${styles.hero_card}`}>
@@ -142,26 +144,23 @@ const GamePage: React.FC = () => {
                         <div className={styles.droppable_area} style={{minHeight: 'auto'}}><CardPlaceholder card={heroCard} /></div>
                     </div>
                     <DroppableArea title={`Volition (${getCardValue(gameState.volitionCard)})`} onDrop={(e) => handleDrop(e, 'volition')} onDragOver={handleDragOver} isEmpty={!gameState.volitionCard} onHelpClick={() => setHelpModal({ open: true, title: 'Volition', description: HELP_DESCRIPTIONS.volition })} zoneId="volition" className={styles.area_outline_volition}>
+                        <Tooltip title="What is the Volition area?"><FontAwesomeIcon icon={faQuestionCircle} className={styles.help_icon} onClick={() => setHelpModal({ open: true, title: 'Volition', description: HELP_DESCRIPTIONS.volition })} /></Tooltip>
                         {gameState.volitionCard && <CardPlaceholder id={gameState.volitionCard.id} card={gameState.volitionCard} onDragStart={(e) => handleDragStart(e, gameState.volitionCard!, 'volition')} onClick={() => handleCardClick(gameState.volitionCard!)} zone="volition" />}
                     </DroppableArea>
                     <DroppableArea title="Satchel" onDrop={(e) => handleDrop(e, 'satchel')} onDragOver={handleDragOver} isEmpty={gameState.satchelCards.length === 0} onHelpClick={() => setHelpModal({ open: true, title: 'Satchel', description: HELP_DESCRIPTIONS.satchel })} zoneId="satchel">
+                        <Tooltip title="What is the Satchel area?"><FontAwesomeIcon icon={faQuestionCircle} className={styles.help_icon} onClick={() => setHelpModal({ open: true, title: 'Satchel', description: HELP_DESCRIPTIONS.satchel })} /></Tooltip>
                         {gameState.satchelCards.map(card => <CardPlaceholder key={card.id} id={card.id} card={card} onDragStart={(e) => handleDragStart(e, card, 'satchel')} onClick={() => handleCardClick(card)} />)}
                     </DroppableArea>
                 </div>
 
                 <div className={`${styles.flex_row_container} ${styles.bottom}`}>
-                    <div className={styles.droppable_area_container}>
+                    <div className={`${styles.droppable_area_container} ${styles.vitality_area_full_width}`}>
                         <Tooltip title="What are Vitality Tokens?"><FontAwesomeIcon icon={faCircleQuestion} className={styles.help_icon} onClick={() => setHelpModal({ open: true, title: 'Available Tokens', description: HELP_DESCRIPTIONS.tokens })} /></Tooltip>
                         <h3 className={styles.vitality_display}>Vitality: {gameState.vitality}</h3>
                         <div className={styles.droppable_area} style={{minHeight: '4rem'}}>{renderAvailableTokens()}</div>
                     </div>
-                    <div className={styles.droppable_area_container}>
-                        <h3 className={styles.subtitle}>Used Tokens</h3>
-                        <div className={styles.used_tokens_area}>{gameState.vitality < 25 ? `Used Vitality: ${25 - gameState.vitality}` : `Used tokens will appear here`}</div>
-                    </div>
-                    <div className={`${styles.droppable_area_container}`} style={{maxWidth: '200px'}}>
-                        <Button type="primary" danger block onClick={() => window.location.reload()} className={styles.restart_button}>Restart Game</Button>
-                    </div>
+                    
+                    
                 </div>
             </div>
 
