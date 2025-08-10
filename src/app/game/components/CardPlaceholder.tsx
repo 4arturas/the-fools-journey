@@ -15,6 +15,7 @@ interface CardPlaceholderProps {
     id?: string;
     className?: string;
     onClick?: (card: Card) => void;
+    zone?: string;
 }
 
 const CardPlaceholder: React.FC<CardPlaceholderProps> = ({ isBack = false, card = null, onDragStart, id, className = '', onClick }) => {
