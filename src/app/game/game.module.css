@@ -304,7 +304,7 @@
 }
 
 .card_face.card_outline_major {
-    border: 3px solid gold;
+    border: 5px solid red;
 }
 
 .card_face.card_outline_minor {

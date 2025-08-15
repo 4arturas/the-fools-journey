@@ -19,7 +19,7 @@ const FutureCardsStack: React.FC<FutureCardsStackProps> = ({ cards, onDragStart,
             <Tooltip title="What is the Future Deck?"><span className={styles.help_icon} onClick={() => onHelpClick('Future')}>{QUESTION_MARK_EMOJI}</span></Tooltip>
             <h3 style={{ marginBottom: '0.5rem' }}>Future ({cards.length})</h3>
             <div className={styles.future_cards_stack}>
-                {topCard && <div draggable={true} onDragStart={(e) => onDragStart(e, topCard, 'future')} style={{ zIndex: 1, transform: `translate(0px, 0px)`, cursor: 'grab' }}><CardPlaceholder isBack={true} className={styles.top_card} card={topCard} /></div>}
+                {topCard && <div draggable={true} onDragStart={(e) => onDragStart(e, topCard, 'future')} style={{ zIndex: 1, transform: `translate(0px, 0px)`, cursor: 'grab' }}><CardPlaceholder isBack={true} className={styles.top_card} card={null} /></div>}
             </div>
         </div>
     );

@@ -4,6 +4,7 @@ import { within, expect } from 'storybook/test';
 import DroppableArea from '../components/DroppableArea';
 import CardPlaceholder from '../components/CardPlaceholder';
 import { DECK_DATA } from '../rules';
+import {Suite} from "@/app/game/types";
 
 const meta: Meta<typeof DroppableArea> = {
   title: 'Game/DroppableArea',
@@ -37,6 +38,6 @@ export const WithCards: Story = {
     title: 'Wisdom',
     isEmpty: false,
     zoneId: 'wisdom',
-    children: <CardPlaceholder card={DECK_DATA.find(c => c.suit.name === 'Pentacles')!} />
+    children: <CardPlaceholder card={DECK_DATA.find(c => c.suit.name === Suite.Pentacles)!} />
   },
 };

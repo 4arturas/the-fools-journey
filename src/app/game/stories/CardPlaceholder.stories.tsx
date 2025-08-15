@@ -1,6 +1,6 @@
 
 import { Meta, StoryObj } from '@storybook/nextjs-vite';
-import { CardType } from '../types';
+import {CardType, Suite} from '../types';
 import CardPlaceholder from '../components/CardPlaceholder';
 import {within, expect} from "storybook/test";
 
@@ -59,7 +59,7 @@ export const MinorArcana: Story = {
       title: 'Wands 8',
       type: CardType.Minor,
       rank: 8,
-      suit: { id: 'wands', name: 'Wands' },
+      suit: { id: 'wands', name: Suite.Wands },
       cardId: 30,
       isDoubled: false,
     },

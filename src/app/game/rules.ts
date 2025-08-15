@@ -1,5 +1,5 @@
 
-import { Card, CardType } from './types';
+import {Card, CardType, Suite} from './types';
 import { SUITS } from './data';
 
 const MAJOR_ARCANA_NAMES = [
@@ -23,7 +23,7 @@ const getMinorArcanaRankName = (rank: number): string => {
 
 export const DECK_DATA = [
     ...Array.from({ length: 22 }, (_, i) => ({ id: `major-${i}`, title: MAJOR_ARCANA_NAMES[i], type: CardType.Major, rank: i, suit: SUITS.MAJOR, cardId: i })),
-    ...['Wands', 'Cups', 'Swords', 'Pentacles'].flatMap((suit, suitIndex) =>
+    ...[Suite.Wands, Suite.Cups, Suite.Swords, Suite.Pentacles].flatMap((suit, suitIndex) =>
         Array.from({ length: 14 }, (_, i) => ({
             id: `${suit.toLowerCase()}-${i + 1}`,
             title: `${getMinorArcanaRankName(i + 1)} of ${suit}`,

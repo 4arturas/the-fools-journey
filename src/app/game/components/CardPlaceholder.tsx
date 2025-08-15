@@ -6,7 +6,7 @@ import { FALLBACK_CARD_BACK_URL, SUIT_ICONS } from '../data';
 import { getCardValue } from '../rules';
 import styles from '../game.module.css';
 
-import { Card, CardType } from '../types';
+import {Card, CardType, Suite} from '../types';
 
 interface CardPlaceholderProps {
     isBack?: boolean;
@@ -26,11 +26,11 @@ const CardPlaceholder: React.FC<CardPlaceholderProps> = ({ isBack = false, card 
     if (card && !isPlaceholder) {
         if (card.type === CardType.Major) {
             outlineClass = styles.card_outline_major;
-        } else if (card.suit.name === 'Swords') {
+        } else if (card.suit.name === Suite.Swords) {
             outlineClass = styles.card_outline_volition;
-        } else if (card.suit.name === 'Pentacles') {
+        } else if (card.suit.name === Suite.Pentacles) {
             outlineClass = styles.card_outline_wisdom;
-        } else if (card.suit.name === 'Wands') {
+        } else if (card.suit.name === Suite.Wands) {
             outlineClass = styles.card_outline_strength;
         } else if (card.type === CardType.Minor) {
             outlineClass = styles.card_outline_minor;
@@ -38,7 +38,6 @@ const CardPlaceholder: React.FC<CardPlaceholderProps> = ({ isBack = false, card 
     }
 
     const imageUrl = card && card.cardId !== null ? `https://gfx.tarot.com/images/site/decks/8-bit/full_size/${card.cardId}.jpg` : null;
-    // TODO: replace 'major' with the Zone.Major, and take a look over the project and replace with Zone enum where can be replaced
     const getCardTitle = (c: Card) => c.type === CardType.Major ? `Major Arcana ${c.rank}` : `${c.suit.name} ${c.rank}`;
 
     return (

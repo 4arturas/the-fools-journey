@@ -4,6 +4,13 @@ export interface Suit {
     name: string;
 }
 
+export enum Suite {
+  Wands = 'Wands',
+  Cups = 'Cups',
+  Swords = 'Swords',
+  Pentacles = 'Pentacles'
+}
+
 export enum Zone {
   Major = 'major',
   Minor = 'minor',

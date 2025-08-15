@@ -1,5 +1,5 @@
 import { useReducer } from 'react';
-import {GameState, Card, CardType, GameZone, Zone, ActionType} from './types';
+import {GameState, Card, CardType, GameZone, Zone, ActionType, Suite} from './types';
 import { getCardValue } from './rules';
 import { message } from 'antd';
 import { shuffleDeck } from './utils';
@@ -43,7 +43,7 @@ const reducer = (state: GameState, action: Action): GameState => {
             // Validation
             switch (targetZone) {
                 case Zone.Wisdom:
-                    if (card.suit.name !== 'Pentacles') {
+                    if (card.suit.name !== Suite.Pentacles) {
                         message.error("Only Pentacles go here.");
                         return state;
                     }
@@ -53,7 +53,7 @@ const reducer = (state: GameState, action: Action): GameState => {
                     }
                     break;
                 case Zone.Strength:
-                    if (card.suit.name !== 'Wands') {
+                    if (card.suit.name !== Suite.Wands) {
                         message.error("Only Wands go here.");
                         return state;
                     }
@@ -63,7 +63,7 @@ const reducer = (state: GameState, action: Action): GameState => {
                     }
                     break;
                 case Zone.Volition:
-                    if (card.suit.name !== 'Swords') {
+                    if (card.suit.name !== Suite.Swords) {
                         message.error("Only Swords go here.");
                         return state;
                     }
@@ -141,7 +141,7 @@ const reducer = (state: GameState, action: Action): GameState => {
                 return state; // Card is not in play, do nothing
             }
 
-            if (card.suit.name === 'Cups') {
+            if (card.suit.name === Suite.Cups) {
                 const value = getCardValue(card);
                 const newVitality = Math.min(25, state.vitality + value);
                 message.success(`You restored ${value} vitality.`);
@@ -159,6 +159,7 @@ const reducer = (state: GameState, action: Action): GameState => {
             if (method === Zone.Volition && state.volitionCard) {
                 const volitionValue = getCardValue(state.volitionCard);
                 if (volitionValue >= cost) {
+                  // TODO: this message is showed twice
                     message.success(`Challenge resolved with ${method}.`);
                     return {
                         ...state,
@@ -167,6 +168,7 @@ const reducer = (state: GameState, action: Action): GameState => {
                         adventureCards: state.adventureCards.filter(c => c.id !== challenge.id),
                     };
                 } else {
+                  // TODO: this message is showed twice
                     message.error(`Could not fully resolve challenge with ${method}.`);
                     const newChallenge = { ...challenge, rank: challenge.rank - volitionValue };
                     return {
@@ -179,6 +181,7 @@ const reducer = (state: GameState, action: Action): GameState => {
             } else if (method === Zone.Strength && state.strengthCard.card) {
                 const strengthValue = getCardValue(state.strengthCard.card);
                 if (strengthValue >= cost) {
+                  // TODO: this message is showed twice
                     message.success(`Challenge resolved with ${method}.`);
                     return {
                         ...state,
@@ -187,6 +190,7 @@ const reducer = (state: GameState, action: Action): GameState => {
                         adventureCards: state.adventureCards.filter(c => c.id !== challenge.id),
                     };
                 } else {
+                  // TODO: this message is showed twice
                     message.success(`Challenge partially resolved with ${method}. You lost some vitality.`);
                     return {
                         ...state,
@@ -197,6 +201,7 @@ const reducer = (state: GameState, action: Action): GameState => {
                     };
                 }
             } else if (method === 'vitality' && state.vitality >= cost) {
+              // TODO: this message is showed twice
                 message.success(`Challenge resolved with ${method}.`);
                 return {
                     ...state,
@@ -205,6 +210,7 @@ const reducer = (state: GameState, action: Action): GameState => {
                     adventureCards: state.adventureCards.filter(c => c.id !== challenge.id),
                 };
             } else {
+              // TODO: this message is showed twice
                 message.error(`Could not resolve challenge with ${method}.`);
                 return state;
             }
