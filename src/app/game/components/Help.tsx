@@ -1,7 +1,6 @@
 "use client";
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Modal } from 'antd';
-import AppContext from '../../AppContext';
 import '../../game.css';
 
 interface HelpModalContentProps {
@@ -65,7 +64,7 @@ function HelpModalContent({ selectedHelpTopic, setHelpModalVisible }: HelpModalC
                         <li id="Satchel"><strong>Store cards in the Satchel:</strong> You can store up to three non-Challenge cards from the Adventure Field in your Satchel.</li>
                         <li><strong>Equip the Fool:</strong> You can equip up to three Wisdom cards, one Strength card, and one Volition card.</li>
                         <li><strong>Replenish Vitality:</strong> Place a Vitality card from the Adventure Field or Satchel into the discard pile to regain vitality up to the starting 25 points.</li>
-                        <li><strong>Deploy Helpers:</strong> Spend one Wisdom to attach a Helper to a Strength, Volition, or Vitality card of the same suit. The Helper doubles the card's value.</li>
+                        <li><strong>Deploy Helpers:</strong> {`Spend one Wisdom to attach a Helper to a Strength, Volition, or Vitality card of the same suit. The Helper doubles the card's value.`}</li>
                         <li><strong>Take a Chance:</strong> Play an Ace from the Adventure Field or Satchel to reshuffle the Adventure Field back into the Deck.</li>
                         <li><strong>Discard unwanted cards:</strong> You can discard any number of non-Challenge cards from the Adventure Field or Satchel at any time.</li>
                     </ul>
@@ -74,15 +73,15 @@ function HelpModalContent({ selectedHelpTopic, setHelpModalVisible }: HelpModalC
                 <div id="Completing Challenges" className={getTopicClassName('Completing Challenges', selectedHelpTopic)}>
                     <h2>Completing Challenges</h2>
                     <ul>
-                        <li><strong>Overcome with Volition (Swords):</strong> If your Volition is greater than or equal to the Challenge's power, the Challenge is overcome. If less, the Challenge's power is depleted by your Volition's value.</li>
-                        <li id="Strength"><strong>Endure with Strength (Batons):</strong> If your Strength is equal to the Challenge's power, both are discarded. If less, the difference is depleted from your vitality. If greater, your Strength is depleted by the Challenge's value.</li>
-                        <li><strong>Directly:</strong> You can subtract the Challenge's value from your vitality.</li>
+                        <li><strong>Overcome with Volition (Swords):</strong> {`If your Volition is greater than or equal to the Challenge's power, the Challenge is overcome. If less, the Challenge's power is depleted by your Volition's value.`}</li>
+                        <li id="Strength"><strong>Endure with Strength (Batons):</strong> {`If your Strength is equal to the Challenge's power, both are discarded. If less, the difference is depleted from your vitality. If greater, your Strength is depleted by the Challenge's value.`}</li>
+                        <li><strong>Directly:</strong> {`You can subtract the Challenge's value from your vitality.`}</li>
                     </ul>
                 </div>
 
                 <div id="Ending the Game" className={getTopicClassName('Ending the Game', selectedHelpTopic)}>
                     <h2>Ending the Game</h2>
-                    <p>The game ends when your vitality is completely depleted. You win if you survive through all the cards in the deck.</p>
+                    <p>The Fool&apos;s vitality has reached zero. Your journey ends here.</p>
                 </div>
 
                 <div id="Wisdom" className={getTopicClassName('Wisdom', selectedHelpTopic)}>
@@ -141,7 +140,6 @@ interface HelpProps {
 }
 
 const Help: React.FC<HelpProps> = ({ link, setHelpModalVisible }) => {
-    const context = useContext(AppContext);
     const [selectedHelpTopic, setSelectedHelpTopic] = useState<string | null>(null);
 
     const scrollToTopic = (topicLink: string) => {

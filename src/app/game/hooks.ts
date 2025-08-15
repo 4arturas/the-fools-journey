@@ -1,11 +1,19 @@
 import { useReducer } from 'react';
-import {ActionType, Card, CardType, GameState, GameZone, Zone} from './types';
+import {GameState, Card, CardType, GameZone, Zone, ActionType} from './types';
 import { getCardValue } from './rules';
 import { message } from 'antd';
 import { shuffleDeck } from './utils';
-import { initialState } from './logic';
 
-export const useGameReducer = () => useReducer(reducer, initialState);
+export const initialState: GameState = {
+    adventureCards: [],
+    pastCards: [],
+    futureCards: [],
+    wisdomCards: [],
+    strengthCard: { card: null, value: 0 },
+    volitionCard: null,
+    satchelCards: [],
+    vitality: 25,
+};
 
 export type Action = 
     | { type: ActionType.SET_DECK, payload: { deck: Card[] } }
@@ -34,7 +42,7 @@ const reducer = (state: GameState, action: Action): GameState => {
 
             // Validation
             switch (targetZone) {
-                case 'wisdom':
+                case Zone.Wisdom:
                     if (card.suit.name !== 'Pentacles') {
                         message.error("Only Pentacles go here.");
                         return state;
@@ -54,7 +62,7 @@ const reducer = (state: GameState, action: Action): GameState => {
                         return state;
                     }
                     break;
-                case 'volition':
+                case Zone.Volition:
                     if (card.suit.name !== 'Swords') {
                         message.error("Only Swords go here.");
                         return state;
@@ -91,11 +99,11 @@ const reducer = (state: GameState, action: Action): GameState => {
                 wisdomCards = wisdomCards.filter(c => c.id !== card.id);
             } else if (sourceZone === Zone.Strength) {
                 strengthCard = { card: null, value: 0 };
-            } else if (sourceZone === 'volition') {
+            } else if (sourceZone === Zone.Volition) {
                 volitionCard = null;
             } else if (sourceZone === Zone.Satchel) {
                 satchelCards = satchelCards.filter(c => c.id !== card.id);
-            } else if (sourceZone === 'past') {
+            } else if (sourceZone === Zone.Past) {
                 pastCards = pastCards.filter(c => c.id !== card.id);
             }
 
@@ -110,7 +118,7 @@ const reducer = (state: GameState, action: Action): GameState => {
                 volitionCard = card;
             } else if (targetZone === Zone.Satchel) {
                 satchelCards = [...satchelCards, card];
-            } else if (targetZone === 'past') {
+            } else if (targetZone === Zone.Past) {
                 pastCards = [...pastCards, card];
             }
 
@@ -204,16 +212,16 @@ const reducer = (state: GameState, action: Action): GameState => {
         case ActionType.DEPLOY_HELPER: {
             const { helper, target } = action.payload;
             const newState = { ...state };
-            const spentWisdom = state.wisdomCards[0];
-            newState.wisdomCards = state.wisdomCards.slice(1);
-            newState.pastCards = [...state.pastCards, spentWisdom, helper];
+            const spentWisdom = newState.wisdomCards[0];
+            newState.wisdomCards = newState.wisdomCards.slice(1);
+            newState.pastCards = [...newState.pastCards, spentWisdom, helper];
 
             const doubleCard = (c: Card) => c.id === target.id ? { ...c, isDoubled: true } : c;
 
-            if (target.zone?.includes(Zone.Strength)) newState.strengthCard = { ...state.strengthCard, card: doubleCard(state.strengthCard.card!), value: getCardValue(doubleCard(state.strengthCard.card!)) };
-            if (target.zone?.includes(Zone.Volition)) newState.volitionCard = doubleCard(state.volitionCard!);
-            if (target.zone?.includes(Zone.Adventure)) newState.adventureCards = state.adventureCards.map(doubleCard);
-            if (target.zone?.includes(Zone.Satchel)) newState.satchelCards = state.satchelCards.map(doubleCard);
+            if (target.zone?.includes(Zone.Strength)) newState.strengthCard = { ...newState.strengthCard, card: doubleCard(newState.strengthCard.card!), value: getCardValue(doubleCard(newState.strengthCard.card!)) };
+            if (target.zone?.includes(Zone.Volition)) newState.volitionCard = doubleCard(newState.volitionCard!); 
+            if (target.zone?.includes(Zone.Adventure)) newState.adventureCards = newState.adventureCards.map(doubleCard);
+            if (target.zone?.includes(Zone.Satchel)) newState.satchelCards = newState.satchelCards.map(doubleCard);
 
             newState.adventureCards = newState.adventureCards.filter(c => c.id !== helper.id);
             newState.satchelCards = newState.satchelCards.filter(c => c.id !== helper.id);
@@ -225,3 +233,5 @@ const reducer = (state: GameState, action: Action): GameState => {
             return state;
     }
 };
+
+export const useGameReducer = () => useReducer(reducer, initialState);
