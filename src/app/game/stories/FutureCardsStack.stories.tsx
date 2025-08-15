@@ -9,7 +9,7 @@ const meta: Meta<typeof FutureCardsStack> = {
   component: FutureCardsStack,
   argTypes: {
     onDragStart: { action: 'drag started' },
-    onHelpClick: { action: 'help clicked' },
+    
   },
 };
 

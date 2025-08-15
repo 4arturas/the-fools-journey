@@ -11,7 +11,7 @@ const meta: Meta<typeof DroppableArea> = {
   argTypes: {
     onDrop: { action: 'dropped' },
     onDragOver: { action: 'dragged over' },
-    onHelpClick: { action: 'help clicked' },
+    
   },
 };
 

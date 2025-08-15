@@ -38,7 +38,8 @@ const CardPlaceholder: React.FC<CardPlaceholderProps> = ({ isBack = false, card 
     }
 
     const imageUrl = card && card.cardId !== null ? `https://gfx.tarot.com/images/site/decks/8-bit/full_size/${card.cardId}.jpg` : null;
-    const getCardTitle = (c: Card) => c.type === 'major' ? `Major Arcana ${c.rank}` : `${c.suit} ${c.rank}`;
+    // TODO: replace 'major' with the Zone.Major, and take a look over the project and replace with Zone enum where can be replaced
+    const getCardTitle = (c: Card) => c.type === CardType.Major ? `Major Arcana ${c.rank}` : `${c.suit.name} ${c.rank}`;
 
     return (
         <Tooltip title={card && !isPlaceholder ? card.title : ''}>

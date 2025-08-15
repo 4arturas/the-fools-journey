@@ -1,5 +1,5 @@
 
-import { GameState, Card, GameZone, CardType } from './types';
+import {GameState, Card, GameZone, CardType, ActionType} from './types';
 import { getCardValue } from './rules';
 import { message } from 'antd';
 import { shuffleDeck } from './utils';
@@ -16,18 +16,18 @@ export const initialState: GameState = {
 };
 
 export type Action =
-    | { type: 'DRAW_ADVENTURE_LINE' }
-    | { type: 'DROP_CARD', payload: { card: Card, sourceZone: GameZone, targetZone: GameZone } }
-    | { type: 'PLAY_CARD', payload: { card: Card } }
-    | { type: 'RESOLVE_CHALLENGE', payload: { challenge: Card, method: string } }
-    | { type: 'DEPLOY_HELPER', payload: { helper: Card, target: Card } }
-    | { type: 'SET_DECK', payload: { deck: Card[] } };
+    | { type: ActionType.DRAW_ADVENTURE_LINE }
+    | { type: ActionType.DROP_CARD, payload: { card: Card, sourceZone: GameZone, targetZone: GameZone } }
+    | { type: ActionType.PLAY_CARD, payload: { card: Card } }
+    | { type: ActionType.RESOLVE_CHALLENGE, payload: { challenge: Card, method: string } }
+    | { type: ActionType.DEPLOY_HELPER, payload: { helper: Card, target: Card } }
+    | { type: ActionType.SET_DECK, payload: { deck: Card[] } };
 
 export const reducer = (state: GameState, action: Action): GameState => {
     switch (action.type) {
-        case 'SET_DECK':
+        case ActionType.SET_DECK:
             return { ...state, futureCards: action.payload.deck };
-        case 'DRAW_ADVENTURE_LINE': {
+        case ActionType.DRAW_ADVENTURE_LINE: {
             const currentNonPlaceholders = state.adventureCards.filter(c => !c.isPlaceholder);
             const cardsToDraw = 4 - currentNonPlaceholders.length;
             if (state.futureCards.length > 0 && cardsToDraw > 0) {
@@ -36,7 +36,7 @@ export const reducer = (state: GameState, action: Action): GameState => {
             }
             return state;
         }
-        case 'DROP_CARD': {
+        case ActionType.DROP_CARD: {
             const { card, sourceZone, targetZone } = action.payload;
 
             // Validation
@@ -134,7 +134,7 @@ export const reducer = (state: GameState, action: Action): GameState => {
                 futureCards,
             };
         }
-        case 'PLAY_CARD': {
+        case ActionType.PLAY_CARD: {
             const { card } = action.payload;
 
             const isCardInPlay = state.adventureCards.some(c => c.id === card.id) || state.satchelCards.some(c => c.id === card.id);
@@ -153,7 +153,7 @@ export const reducer = (state: GameState, action: Action): GameState => {
             }
             return state;
         }
-        case 'RESOLVE_CHALLENGE': {
+        case ActionType.RESOLVE_CHALLENGE: {
             const { challenge, method } = action.payload;
             const cost = challenge.rank;
 
@@ -210,7 +210,7 @@ export const reducer = (state: GameState, action: Action): GameState => {
                 return state;
             }
         }
-        case 'DEPLOY_HELPER': {
+        case ActionType.DEPLOY_HELPER: {
             const { helper, target } = action.payload;
             const newState = { ...state };
             const spentWisdom = state.wisdomCards[0];

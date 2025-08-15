@@ -4,9 +4,30 @@ export interface Suit {
     name: string;
 }
 
+export enum Zone {
+  Major = 'major',
+  Minor = 'minor',
+  Past = 'past',
+  Wisdom = 'wisdom',
+  Strength = 'strength',
+  Volition = 'volition',
+  Satchel = 'satchel',
+  Adventure = 'adventure',
+  Future = 'future'
+}
+
+export enum ActionType {
+  SET_DECK,
+  DRAW_ADVENTURE_LINE,
+  DROP_CARD,
+  PLAY_CARD,
+  RESOLVE_CHALLENGE,
+  DEPLOY_HELPER
+}
+
 export enum CardType {
-    Major = 'major',
-    Minor = 'minor',
+    Major = Zone.Major,
+    Minor = Zone.Minor,
 }
 
 export interface GameState {
@@ -20,19 +41,8 @@ export interface GameState {
     vitality: number;
 }
 
-export enum Zone {
-    Major = 'major',
-    Minor = 'minor',
-    Past = 'past',
-    Wisdom = 'wisdom',
-    Strength = 'strength',
-    Volition = 'volition',
-    Satchel = 'satchel',
-    Adventure = 'adventure',
-    Future = 'future'
-}
-
-export type GameZone = 'past' | 'wisdom' | 'strength' | 'volition' | 'satchel' | 'adventure' | 'future';
+// TODO: I want Zone enum values here to be used
+export type GameZone = Zone.Past | Zone.Wisdom | Zone.Strength | Zone.Volition | Zone.Satchel | Zone.Adventure | Zone.Future;
 
 export interface Card {
     id: string;

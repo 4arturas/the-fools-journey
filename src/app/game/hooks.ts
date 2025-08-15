@@ -1,5 +1,5 @@
 import { useReducer } from 'react';
-import { Card, CardType, GameState, GameZone } from './types';
+import {ActionType, Card, CardType, GameState, GameZone, Zone} from './types';
 import { getCardValue } from './rules';
 import { message } from 'antd';
 import { shuffleDeck } from './utils';
@@ -8,19 +8,19 @@ import { initialState } from './logic';
 export const useGameReducer = () => useReducer(reducer, initialState);
 
 export type Action = 
-    | { type: 'SET_DECK', payload: { deck: Card[] } }
-    | { type: 'DRAW_ADVENTURE_LINE' }
-    | { type: 'DROP_CARD', payload: { card: Card, sourceZone: GameZone, targetZone: GameZone } }
-    | { type: 'PLAY_CARD', payload: { card: Card } }
-    | { type: 'RESOLVE_CHALLENGE', payload: { challenge: Card, method: string } }
-    | { type: 'DEPLOY_HELPER', payload: { helper: Card, target: Card } };
+    | { type: ActionType.SET_DECK, payload: { deck: Card[] } }
+    | { type: ActionType.DRAW_ADVENTURE_LINE }
+    | { type: ActionType.DROP_CARD, payload: { card: Card, sourceZone: GameZone, targetZone: GameZone } }
+    | { type: ActionType.PLAY_CARD, payload: { card: Card } }
+    | { type: ActionType.RESOLVE_CHALLENGE, payload: { challenge: Card, method: string } }
+    | { type: ActionType.DEPLOY_HELPER, payload: { helper: Card, target: Card } };
 
 const reducer = (state: GameState, action: Action): GameState => {
     switch (action.type) {
-        case 'SET_DECK': {
+        case ActionType.SET_DECK: {
             return { ...state, futureCards: action.payload.deck };
         }
-        case 'DRAW_ADVENTURE_LINE': {
+        case ActionType.DRAW_ADVENTURE_LINE: {
             const currentNonPlaceholders = state.adventureCards.filter(c => !c.isPlaceholder);
             const cardsToDraw = 4 - currentNonPlaceholders.length;
             if (state.futureCards.length > 0 && cardsToDraw > 0) {
@@ -29,7 +29,7 @@ const reducer = (state: GameState, action: Action): GameState => {
             }
             return state;
         }
-        case 'DROP_CARD': {
+        case ActionType.DROP_CARD: {
             const { card, sourceZone, targetZone } = action.payload;
 
             // Validation
@@ -44,7 +44,7 @@ const reducer = (state: GameState, action: Action): GameState => {
                         return state;
                     }
                     break;
-                case 'strength':
+                case Zone.Strength:
                     if (card.suit.name !== 'Wands') {
                         message.error("Only Wands go here.");
                         return state;
@@ -64,7 +64,7 @@ const reducer = (state: GameState, action: Action): GameState => {
                         return state;
                     }
                     break;
-                case 'satchel':
+                case Zone.Satchel:
                     if (card.type === CardType.Major) {
                         message.error("Challenges cannot go here.");
                         return state;
@@ -85,30 +85,30 @@ const reducer = (state: GameState, action: Action): GameState => {
             const futureCards = [...state.futureCards];
 
             // Remove card from source
-            if (sourceZone === 'adventure') {
+            if (sourceZone === Zone.Adventure) {
                 adventureCards = adventureCards.filter(c => c.id !== card.id);
-            } else if (sourceZone === 'wisdom') {
+            } else if (sourceZone === Zone.Wisdom) {
                 wisdomCards = wisdomCards.filter(c => c.id !== card.id);
-            } else if (sourceZone === 'strength') {
+            } else if (sourceZone === Zone.Strength) {
                 strengthCard = { card: null, value: 0 };
             } else if (sourceZone === 'volition') {
                 volitionCard = null;
-            } else if (sourceZone === 'satchel') {
+            } else if (sourceZone === Zone.Satchel) {
                 satchelCards = satchelCards.filter(c => c.id !== card.id);
             } else if (sourceZone === 'past') {
                 pastCards = pastCards.filter(c => c.id !== card.id);
             }
 
             // Add card to target
-            if (targetZone === 'adventure') {
+            if (targetZone === Zone.Adventure) {
                 adventureCards = [...adventureCards, card];
-            } else if (targetZone === 'wisdom') {
+            } else if (targetZone === Zone.Wisdom) {
                 wisdomCards = [...wisdomCards, card];
-            } else if (targetZone === 'strength') {
+            } else if (targetZone === Zone.Strength) {
                 strengthCard = { card: card, value: getCardValue(card) };
-            } else if (targetZone === 'volition') {
+            } else if (targetZone === Zone.Volition) {
                 volitionCard = card;
-            } else if (targetZone === 'satchel') {
+            } else if (targetZone === Zone.Satchel) {
                 satchelCards = [...satchelCards, card];
             } else if (targetZone === 'past') {
                 pastCards = [...pastCards, card];
@@ -125,7 +125,7 @@ const reducer = (state: GameState, action: Action): GameState => {
                 futureCards,
             };
         }
-        case 'PLAY_CARD': {
+        case ActionType.PLAY_CARD: {
             const { card } = action.payload;
 
             const isCardInPlay = state.adventureCards.some(c => c.id === card.id) || state.satchelCards.some(c => c.id === card.id);
@@ -144,11 +144,11 @@ const reducer = (state: GameState, action: Action): GameState => {
             }
             return state;
         }
-        case 'RESOLVE_CHALLENGE': {
+        case ActionType.RESOLVE_CHALLENGE: {
             const { challenge, method } = action.payload;
             const cost = challenge.rank;
 
-            if (method === 'volition' && state.volitionCard) {
+            if (method === Zone.Volition && state.volitionCard) {
                 const volitionValue = getCardValue(state.volitionCard);
                 if (volitionValue >= cost) {
                     message.success(`Challenge resolved with ${method}.`);
@@ -168,7 +168,7 @@ const reducer = (state: GameState, action: Action): GameState => {
                         volitionCard: null,
                     };
                 }
-            } else if (method === 'strength' && state.strengthCard.card) {
+            } else if (method === Zone.Strength && state.strengthCard.card) {
                 const strengthValue = getCardValue(state.strengthCard.card);
                 if (strengthValue >= cost) {
                     message.success(`Challenge resolved with ${method}.`);
@@ -201,7 +201,7 @@ const reducer = (state: GameState, action: Action): GameState => {
                 return state;
             }
         }
-        case 'DEPLOY_HELPER': {
+        case ActionType.DEPLOY_HELPER: {
             const { helper, target } = action.payload;
             const newState = { ...state };
             const spentWisdom = state.wisdomCards[0];
@@ -210,10 +210,10 @@ const reducer = (state: GameState, action: Action): GameState => {
 
             const doubleCard = (c: Card) => c.id === target.id ? { ...c, isDoubled: true } : c;
 
-            if (target.zone?.includes('strength')) newState.strengthCard = { ...state.strengthCard, card: doubleCard(state.strengthCard.card!), value: getCardValue(doubleCard(state.strengthCard.card!)) };
-            if (target.zone?.includes('volition')) newState.volitionCard = doubleCard(state.volitionCard!);
-            if (target.zone?.includes('adventure')) newState.adventureCards = state.adventureCards.map(doubleCard);
-            if (target.zone?.includes('satchel')) newState.satchelCards = state.satchelCards.map(doubleCard);
+            if (target.zone?.includes(Zone.Strength)) newState.strengthCard = { ...state.strengthCard, card: doubleCard(state.strengthCard.card!), value: getCardValue(doubleCard(state.strengthCard.card!)) };
+            if (target.zone?.includes(Zone.Volition)) newState.volitionCard = doubleCard(state.volitionCard!);
+            if (target.zone?.includes(Zone.Adventure)) newState.adventureCards = state.adventureCards.map(doubleCard);
+            if (target.zone?.includes(Zone.Satchel)) newState.satchelCards = state.satchelCards.map(doubleCard);
 
             newState.adventureCards = newState.adventureCards.filter(c => c.id !== helper.id);
             newState.satchelCards = newState.satchelCards.filter(c => c.id !== helper.id);
