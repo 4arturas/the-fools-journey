@@ -37,7 +37,7 @@ const CardPlaceholder: React.FC<CardPlaceholderProps> = ({ isBack = false, card 
         }
     }
 
-    const imageUrl = card && card.cardId !== null ? `https://gfx.tarot.com/images/site/decks/8-bit/full_size/${card.cardId}.jpg` : null;
+    const imageUrl = card && card.cardId !== null ? `/tarot_images/8-Bit_Tarot_Deck/${card.cardId}.jpg` : null;
     const getCardTitle = (c: Card) => c.type === CardType.Major ? `Major Arcana ${c.rank}` : `${c.suit.name} ${c.rank}`;
 
     return (
